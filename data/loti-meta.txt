@@ -1,0 +1,16 @@
+Land-Ocean Temperature Index (C)
+--------------------------------
+Data file: "loti.csv"
+
+Data source: NASA's Goddard Institute for Space Studies (GISS). Credit: NASA/GISS
+
+See https://climate.nasa.gov/vital-signs/global-temperature/
+
+Based on data downloaded from the following site on 2020-07-14:
+https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt
+
+Format: Comma separated values:
+<Year>,<No_Smoothing>,<Lowess(5)><line_break>
+
+Example:
+1880,-0.15-0.08

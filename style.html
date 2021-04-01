@@ -1,0 +1,44 @@
+<!-- style.html: General app CSS -->
+<style>
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
+    flex              : 0 1 300px
+}
+.p-Collapse-header {
+    color             : white !important;
+    background-color  : steelblue !important;
+    padding-top       : 3px;
+    padding-bottom    : 3px;
+}
+.p-TabBar-tabLabel {
+    font-weight       : bold !important;
+    color             : steelblue !important;
+    margin-top        : 1em !important;
+    margin-bottom     : 1em !important;
+}
+.widget-label {
+    text-align        : left !important;
+}
+p {
+    line-height       : 1.2em;
+    margin-bottom     : 1em;
+}
+/* Avoid output scrollbars (sub-windowing) */
+.output_wrapper, .output {
+    height            : auto !important;
+    max-height        : 99999px;
+}
+.output_scroll {
+    box-shadow        : none !important;
+    webkit-box-shadow : none !important;
+    /* height            : 44em;   Expand output cells */
+}
+#site {
+    height            : 100% !important;
+}
+.prompt {
+    min-width         : 1px !important; /* Collapse left margin */
+}
+pre {
+    user-select       : all;
+}
+</style>
