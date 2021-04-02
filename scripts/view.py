@@ -1,18 +1,18 @@
-# view.py - User interface for scsa notebook
+# view.py - User interface for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
 
-import sys
 import ipywidgets as ui
 import urllib
-from scripts import plotter
-from IPython.display import display
+from matplotlib import pyplot as plt
+from IPython.display import display, FileLink 
 
 class View:
 
     EMPTY_LIST_MSG = '''<br>(There's no data to display.)'''
-    ALL            = 'All'
-    EMPTY          = ''
-    FILTER_PROG    = 'Searching...'
+    ALL = 'All'
+    EMPTY = ''
+    FILTER_PROG = 'Searching...'
+    EXPORT_LINK_PROMPT = "Click here to save file: "
 
     LO10 = ui.Layout(width='10%')
     LO15 = ui.Layout(width='15%')
@@ -28,7 +28,6 @@ class View:
 
     def display(self,display_log):
         '''Build and show notebook user interface'''
-        self.plotter = plotter.Plotter(self.model)
         self.build()
 
         if display_log:
@@ -197,13 +196,13 @@ class View:
         NOTE_TITLE    = 'Note'
         NOTE_TEXT     = 'The plot is based on results from the Selection tab.'
         PLOT_TITLE    = 'Plot'
-        PLOT_OPTIONS  = ['No Smoothing','Lowess','Both']
-        PLOT_LABEL    = 'Select data fields'
+        PLOT_LABEL    = 'Select data field'
 
         content = []
         content.append(self.section(NOTE_TITLE,NOTE_TEXT))
 
-        self.plotex_ddn_selex_lg = ui.Dropdown(options=[self.EMPTY]+PLOT_OPTIONS,value=None,disabled=True)
+        self.plot_ddn    = ui.Dropdown(options=[self.EMPTY],value=None,disabled=True)
+        self.plot_output = ui.Output()
 
         widgets = []
 
@@ -212,8 +211,8 @@ class View:
         row.append(ui.Label(value='',layout=ui.Layout(width='60%'))) # Cheat: spacer
         widgets.append(ui.HBox(row))
 
-        widgets.append(self.plotex_ddn_selex_lg)
-        widgets.append(self.plotter.line_plot) # Use widget from plotter
+        widgets.append(self.plot_ddn)
+        widgets.append(self.plot_output)
         content.append(self.section(PLOT_TITLE,widgets))
 
         return ui.VBox(content)
@@ -233,31 +232,13 @@ class View:
             self.model.set_disp(limit=limit)
             self.output(self.model.results.head(limit), self.filter_output)
 
-    def set_plot_status(self,enable):
-        '''Change status of plot-related widgets based on availability of filter results'''
-
-        self.plotter.clear_plots(self.plotex_img_dispp_hm)
-
-        if enable:
-            self.plotex_ddn_selex_lg.disabled = False
-            self.plotex_ddn_selex_hm.disabled = False
-            self.plotco_ddn_netw.disabled      = False
-
-            self.plotter.line_plot.layout.title = self.plotter.LINE_PROMPT_TITLE
-            self.plotter.net_plot.layout.title  = self.plotter.NET_PROMPT_TITLE
-
-            self.plotter.out_plot_msg(self.plotex_img_dispp_hm,self.plotter.HEAT_PROMPT_TITLE)
-
+    def set_plot_status(self):
+        """Change status of plot-related widgets based on availability of filter results"""
+        if self.model.res_count > 0:
+            self.plot_ddn.disabled = False
+            self.plot_ddn.options = [self.EMPTY]+self.model.headers[1:]
         else:
-            self.plotex_ddn_selex_lg.disabled = True
-            self.plotex_ddn_selex_hm.disabled = True
-            self.plotco_ddn_netw.disabled     = True
-
-            self.plotter.line_plot.layout.title = self.plotter.LINE_INIT_TITLE
-            self.plotter.net_plot.layout.title  = self.plotter.NET_INIT_TITLE
-
-            self.plotter.out_plot_msg(self.plotex_img_dispp_hm,self.plotter.HEAT_INIT_TITLE)
-            self.ctrl.set_module_data([self.NO_MODULE_DATA],[(None,None)])
+            self.plot_ddn.disabled = True
 
     def get_module_export_header(self):
         '''Generate module output header for export'''
@@ -274,10 +255,10 @@ class View:
 
         return ret
 
-    def output_data_link(self,output_widget,data_str):
+    def output_data_link(_ ,output_widget, data_str):
         '''Create data URI link to download data'''
 
-        pre  = '<a download="scsa.csv" target="_blank" href="data:text/csv;charset=utf-8,'
+        pre  = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
         post = '">Download</a>'
 
         with output_widget:
@@ -295,5 +276,31 @@ class View:
             display(content)
 
     def empty_list_msg(self):
-        with self.filter_output:
-            display(ui.HTML(self.EMPTY_LIST_MSG))
+        self.output(self.EMPTY_LIST_MSG, self.filter_output)
+
+    def plot(self):
+        if not self.plot_ddn.value == self.EMPTY:
+            try:
+                self.plot_output.clear_output(wait=True)
+                
+                with self.plot_output:
+                    # Render plot - NOTE Assumes data is pandas datatframe TODO Abstract that?
+                    self.model.results.plot(x=self.model.headers[0],y=self.plot_ddn.value,figsize=(15,10))
+
+                    # Update output widget with new plot
+                    plt.show()
+                    self.ctrl.logger.debug('after plt.show()')
+            except Exception:
+                plt.close()  # Clear any partial plot output
+                self.logger.debug('raising exception')
+                raise
+
+    def export_link(self, filepath, output):
+        """Create data URI link and add it to export output area"""
+        self.ctrl.logger.debug('At')
+        output.clear_output()
+
+        link = FileLink(filepath, result_html_prefix=self.EXPORT_LINK_PROMPT)
+
+        with output:
+            display(link)

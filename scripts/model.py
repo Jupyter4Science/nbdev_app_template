@@ -1,16 +1,16 @@
-# model.py - Storage access for scsa notebook
+# model.py - Storage access for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
 
 import os
-import sys
-import time
+import csv
+import glob
 import pandas as pd
 
 class Model:
 
-    DATA_DIR  = 'data'
+    DATA_DIR = 'data'
     DATA_FILE = 'loti.csv'
-    YEAR      = '#Year'
+    DOWNLOAD_DATA_NAME = 'loti-download'
 
     def __init__(self):
         self.view      = None
@@ -47,8 +47,8 @@ class Model:
     def get_data(self):
         '''Load data into memory from file'''
 
-        self.data    = pd.read_csv(os.path.join(self.DATA_DIR,self.DATA_FILE))
-        self.headers = self.data.head()
+        self.data    = pd.read_csv(os.path.join(self.DATA_DIR,self.DATA_FILE), escapechar='#')
+        self.headers = list(self.data.columns.values)
 
         # Get values for data selection
         self.ymin  = min(self.data[self.data.columns[0]])
@@ -63,35 +63,34 @@ class Model:
         self.res_count = 0
 
     def search(self,from_year,to_year):
-        '''Use provided values lists to search for data'''
-        self.ctrl.logger.debug('-')
-
-        # Build query string
-        self.query = self.YEAR+' >= '+str(from_year) #+' and '+self.YEAR+' <= '+str(to_year)
-        self.ctrl.logger.debug('Query string: "'+self.query+'"')
-
-        # Run query
-        self.results   = self.data[(self.data['#Year'] >= int(from_year)) & (self.data['#Year'] <= int(to_year))]
-        self.res_count = self.results.shape[0]
-        self.ctrl.logger.debug('Results: '+str(self.res_count))
-
-    def sort(self,col_list):
-        self.results = self.results.sort_values(by=[self.YEAR])
+        '''Use provided values to filter data'''
+        try:
+            self.results   = self.data[(self.data[self.headers[0]] >= int(from_year)) & (self.data[self.headers[0]] <= int(to_year))]
+            self.res_count = self.results.shape[0]
+            self.ctrl.logger.debug('Results: '+str(self.res_count))
+        except:
+            self.ctrl.logger.debug('Search error!')  # TODO Add exeception text
+            self.res_count = 0
 
     def iterate_data(self):
         return self.data.itertuples()
 
-    def iterate_results(self):
-        return self.results.itertuples()
+    def delete_downloads(self, base_name):
+        """Remove any existing download file(s) of given name"""
+        self.ctrl.logger.debug('At')
 
-    def write_results(self):
-        '''Prep data for export'''
-        self.res_csv = ','.join(self.headers) + '\n'
+        for filename in glob.glob(base_name + '.*'):
+            os.remove(filename)
 
-        for i,row in enumerate(self.iterate_results()):
-            self.res_csv += ','.join([str(row)]) + '\n' # TODO fix this
+    def create_download_file(self, data, file_format_ext):
+        """Prep data for export"""
+        self.ctrl.logger.debug('At')
 
-        self.ctrl.logger.debug('Rendered CSV')
+        # First, to save space, delete existing download file(s)
+        self.delete_downloads(self.DOWNLOAD_DATA_NAME)
 
+        # Create new download file TODO Other download formats
+        filename = self.DOWNLOAD_DATA_NAME + '.' + file_format_ext
+        data.to_csv(filename, index=False, quoting=csv.QUOTE_NONNUMERIC)
 
-
+        return filename

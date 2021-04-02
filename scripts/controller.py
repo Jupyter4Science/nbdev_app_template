@@ -1,7 +1,5 @@
-# controller.py - Central logic for scsa notebook
+# controller.py - Central logic for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
-
-import os
 
 import logging
 import traceback
@@ -11,7 +9,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 class CombineLogFields(logging.Filter):
-	def filter(self, record):
+	def filter(_, record):
 		record.filename_lineno = "%s:%d" % (record.filename, record.lineno)
 		return True
 
@@ -81,27 +79,25 @@ class Controller(logging.Handler):
 			self.view.filter_btn_apply.on_click(  self.cb_apply_filter)
 			self.view.filter_ddn_ndisp.observe(   self.cb_ndisp_changed,self.VALUE)
 			self.view.filter_btn_refexp.on_click( self.cb_fill_results_export)
-			#self.view.viz_ddn_plot_type.observe(  self.cb_plot_type_selected,self.VALUE)
-			#self.view.data_ddn_src.observe(       self.cb_data_source_selected,self.VALUE)
+			self.view.plot_ddn.observe(           self.cb_plot_type_selected,self.VALUE)
 		except:
 			self.logger.debug('EXCEPTION\n'+traceback.format_exc())
 			raise
 
-	def cb_fill_results_export(self,change):
-		# Generate output file
-		self.view.filter_out_export.clear_output()
+	def cb_fill_results_export(self, _):
+		"""User hit button to download results"""
+		self.logger.debug('At')
 
-		if self.model.filter_results:
-			self.view.output_data_link(self.view.filter_out_export,self.model.write_filtered_data())
+		try:
+			# Create link for filter results
+			if self.model.res_count > 0:
+				filename = self.model.create_download_file(self.model.results, 'csv')
+				self.view.export_link(filename, self.view.filter_out_export)
+		except Exception:
+			self.logger.debug('EXCEPTION\n' + traceback.format_exc())
+			raise
 
-	def cb_fill_module_export(self,change):
-		# Generate output file
-		self.view.plotco_out_export.clear_output()
-
-		if self.model.filter_results:
-			self.view.output_data_link(self.view.plotco_out_export,self.model.module_download_data)
-
-	def cb_apply_filter(self,change):
+	def cb_apply_filter(self, _):
 		'''React to apply filter button press'''
 
 		self.view.filter_out_export.clear_output()
@@ -109,24 +105,18 @@ class Controller(logging.Handler):
 		self.model.search(self.view.filter_txt_startyr.value,self.view.filter_txt_endyr.value)
 		self.cb_refresh_filter_output()
 
-	def cb_ndisp_changed(self,change):
-		self.refresh_filter_output()
+	def cb_ndisp_changed(self, _):
+		self.cb_refresh_filter_output()
 
 	def cb_refresh_filter_output(self):
 		# Enable or disable controls based on filter results
 		if self.model.res_count > 0:
 			self.view.update_filtered_output()	
-			self.view.set_plot_status(enable=True)
 		else:
 			self.view.empty_list_msg()
-			self.view.filter_btn_downd.update()  # Disable download
-			self.view.set_plot_status(enable=False)
+			# TODO Disable download
 
-	def linegraph_experiment_selected(self,change):
-		'''React to experiment selection for line graph'''
-		experiment = change['owner'].value
+		self.view.set_plot_status()
 
-		if experiment != self.view.EMPTY:
-			gene_list   = list(self.model.filter_results.keys())
-			self.plotter.draw_line_plot(experiment,gene_list)
-
+	def cb_plot_type_selected(self, _):
+		self.view.plot()
