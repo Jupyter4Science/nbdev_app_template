@@ -1,9 +1,18 @@
 # SCSA - Self-Contained Science App
 A code template for building data publication and exploration tools and web applications.
 
-## Input Files
+This repository contains a Jupyter notebook and associated code. It is intended as an example or template for createing data publications applications. You can run the notebook using "jupyter notebook", browsing to "localhost:8888", and opening "loti.ipynb", Or you can use Docker to run it using Voila.
 
- (data files)
+The example notbook uses global temperature data from NASA to show how users can view, search, download, and plot data.
+
+## Running on your workstation
+
+1. Using Anaconda or your OS package manger, install Jupyter
+2. Go to the directory containing the loti.ipynb file.
+3. Run "jupyter notebook".
+4. Open browser and enter address: "localhost:8888"
+5. Click on the link for "loti.ipynb"
+6. Run the notebook.  
 
 ## Running in a Docker Container
 
