@@ -4,4 +4,4 @@ RUN    conda install -c conda-forge 'voila'        \
     && conda clean --all -f -y                     \
     && mkdir external
 WORKDIR external
-CMD ["voila","--no-browser","scsa.ipynb"]
+CMD ["voila","--no-browser","loti.ipynb"]

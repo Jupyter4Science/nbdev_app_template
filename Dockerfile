@@ -9,4 +9,4 @@ RUN    conda install -c conda-forge 'voila'        \
     && mkdir $repodir/data
 COPY --chown=jovyan:users $datapath $repodir/data
 WORKDIR $repodir
-CMD ["voila","--no-browser","scsa.ipynb"]
+CMD ["voila","--no-browser","loti.ipynb"]
