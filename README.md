@@ -35,7 +35,7 @@ A couple notes...
     - The controller is also a Python logging handler. It outputs items from info and debug logging calls to the "Log" at the bottom of the page.
     - The "Log" can be hidden if needed. Or, it can be displayed during development and hidden prior to publishng the app.
     - The "Log" is a quick way to perform simple [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques)  ("self.ctrl.logger.debug('Results: '+str(self.res_count))").
-    - Setting parameter values when creating the controller (loti.ipynb: "loti_controller.Controller(log=True,debug=True)") determine wheter the log is displayed or hidden and whether debug items are included in it.
+    - Controller parameters values (loti.ipynb: "loti_controller.Controller(log=True,debug=True)") determine wheter the log is displayed or hidden and whether debug items are included in it.
 
 ## Running on your workstation
 
