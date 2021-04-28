@@ -76,9 +76,10 @@ class Controller(logging.Handler):
             self.logger.debug('UI ready, log items should appear')
 
             # Connect UI widgets to callback methods ("cb_...").
-            # These methods will be run when user changes widget.
+            # These methods will be run when user changes a widget.
+			# (Note: "on_click()" connects buttons, "observe()" connects other widgets.)
 
-            # ________ Widget ___________________ _____________Method to call ___________________
+            # Format: self.view.<widget_to_watch>.<on_click_or_observe>(method_to_call)
             self.view.filter_btn_apply.on_click(self.cb_apply_filter)
             self.view.filter_ddn_ndisp.observe(self.cb_ndisp_changed, self.VALUE)
             self.view.filter_btn_refexp.on_click(self.cb_fill_results_export)

@@ -5,6 +5,40 @@ This repository contains a Jupyter notebook and associated code. It is intended 
 
 The example notbook uses global temperature data from NASA to show how users can view, search, download, and plot data.
 
+## How It Works
+
+Files are organized in a broad "Model-view-controller" ([MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is diveded into three main files under the "scripts" directory. Three classes reside in these files:
+
+- "model.py" (class Model): read/write data to/from storage, manage queries
+- "view.py" (class View): create and manage user interface
+- "controller.py" (class Controller): Create model and view, respond to user actions
+
+The Jupyter notebook ('loti.ipynb") contains just one code cell. Here, model, view, and control objects are created and introduced to each other. Then, the controller's "start()" method is called to start the application running. Here, the controller does three things:
+
+- Asks model to prepare the data (read the data from storage)
+- Asks the view build the user interace (create and display [ipywidgets](https://ipywidgets.readthedocs.io/en/stable/) UI controls - aka "widgets")
+- Sets up ["callback"](https://en.wikipedia.org/wiki/Callback_(computer_programming) methods.
+
+At this point, the running code simply waits for the user to make changes to user interface widgets. When widgets change, they call thier assigned callback methods. These methods react in various ways the ususally end up changing the ".value" properties of other widgets.
+
+When widgets' .value properties are changd, they immediatly update themselves and the changes are automatically reflected in the browser page. So, the code does not need to call and update method or explicitly trigger an event.
+
+For example, the view creates a button named "filter_btn_apply". The controller specifies that, when this button is pressed, its "cb_apply_filter()" method should be called ("self.view.filter_btn_apply.on_click(self.cb_apply_filter)"). The "cb_apply_filter()" method then directs the model to perform the query and the view to update the output.
+
+A couple notes...
+
+1. Other files:
+    - "header.html": application-specific items such as app title, colors, and fonts (CSS)
+    - "style.html": additional app styling (CSS)
+    - "data/loti.csv": application data
+2. Logging / Debugging
+    - The controller is also a Python logging handler. It outputs items from info and debug logging calls to the "Log" at the bottom of the page.
+    - The "Log" can be hidden if needed. Or, it can be displayed during development and hidden prior to publishng the app.
+    - The "Log" is an quick way to perform simple "print" debugging ("self.ctrl.logger.debug('Results: '+str(self.res_count))").
+    - Setting parameter values when creating the controller (loti.ipynb: "loti_controller.Controller(log=True,debug=True)") determine wheter the log is displayed or hidden and whether debug items are included in it.
+
+
+
 ## Running on your workstation
 
 1. Using Anaconda or your OS package manger, install Jupyter
@@ -12,7 +46,7 @@ The example notbook uses global temperature data from NASA to show how users can
 3. Run "jupyter notebook".
 4. Open browser and enter address: "localhost:8888"
 5. Click on the link for "loti.ipynb"
-6. Run the notebook.  
+6. Run the notebook.
 
 ## Running in a Docker Container
 
