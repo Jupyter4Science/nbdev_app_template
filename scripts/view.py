@@ -4,7 +4,8 @@
 import ipywidgets as ui
 import urllib
 from matplotlib import pyplot as plt
-from IPython.display import display, FileLink 
+from IPython.display import display, FileLink
+
 
 class View:
 
@@ -20,45 +21,45 @@ class View:
     LO25 = ui.Layout(width='25%')
 
     def __init__(self):
-        self.tabs    = None # Main UI container
+        self.tabs = None  # Main UI container
 
-    def intro(self,model,ctrl):
+    def intro(self, model, ctrl):
         self.model = model
-        self.ctrl  = ctrl
+        self.ctrl = ctrl
 
-    def display(self,display_log):
+    def display(self, display_log):
         '''Build and show notebook user interface'''
         self.build()
 
         if display_log:
             self.debug_output = ui.Output(layout={'border': '1px solid black'})
-            display(ui.VBox([self.tabs,self.section('Log',[self.debug_output])]))
+            display(ui.VBox([self.tabs, self.section('Log', [self.debug_output])]))
         else:
             display(self.tabs)
 
-    def debug(self,text):
+    def debug(self, text):
         with self.debug_output:
             print(text)
 
-    def section(self,title,contents):
+    def section(self, title, contents):
         '''Create a collapsible widget container'''
 
         if type(contents) == str:
             contents = [ui.HTML(value=contents)]
 
         ret = ui.Accordion(children=tuple([ui.VBox(contents)]))
-        ret.set_title(0,title)
+        ret.set_title(0, title)
         return ret
 
     def build(self):
         '''Create user interface'''
-        TITLES = ['Welcome','Data','Selection','Visualize']
+        TITLES = ['Welcome', 'Data', 'Selection', 'Visualize']
 
         self.tabs = ui.Tab()
 
         # Set title for each tab
         for i in range(len(TITLES)):
-            self.tabs.set_title(i,TITLES[i])
+            self.tabs.set_title(i, TITLES[i])
 
         # Build conent (widgets) for each tab
         tab_content = []
@@ -73,25 +74,28 @@ class View:
     def welcome(self):
         '''Create widgets for introductory tab content'''
         USING_TITLE = 'Using This App'
-        USING_TEXT  = '''<p>
+        USING_TEXT = '''<p>
         In the <b>Data</b> tab above, you can review the dataset.
         In the <b>Selection</b> tab, you can search for and download data of interest.
         Once you've selected data, generate plots in the <b>Visualize</b> tab.
         </p>'''
         SOURCES_TITLE = 'Data Sources'
-        SOURCES_TEXT  = '''<p>
+        SOURCES_TEXT = '''<p>
         <b>Land-Ocean Temperature Index</b>
-        <a href="https://climate.nasa.gov/vital-signs/global-temperature/" target="_blank">Global Temperature (NASA)</a>
+        <a href="https://climate.nasa.gov/vital-signs/global-temperature/"
+        target="_blank">Global Temperature (NASA)</a>
         ,
-        <a href="https://data.giss.nasa.gov/gistemp/" target="_blank">GISS Surface Temperature Analysis (NASA)</a>
+        <a href="https://data.giss.nasa.gov/gistemp/"
+        target="_blank">GISS Surface Temperature Analysis (NASA)</a>
         </p><p>
         This site is based on data downloaded from the following site on 2020-07-14:
-        <a href="https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt" target="_blank">Global Mean Estimates based on Land_and Ocean Data (NASA)</a>
+        <a href="https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"  # noqa
+        target="_blank">Global Mean Estimates based on Land_and Ocean Data (NASA)</a>
         </p>'''
 
         content = []
-        content.append(self.section(USING_TITLE  ,USING_TEXT  ))
-        content.append(self.section(SOURCES_TITLE,SOURCES_TEXT))
+        content.append(self.section(USING_TITLE, USING_TEXT))
+        content.append(self.section(SOURCES_TITLE, SOURCES_TEXT))
 
         return ui.VBox(content)
 
@@ -110,13 +114,13 @@ class View:
 
         # Table column headers
 
-        html += '<th class="data_cell"> </th>' # Blank header for line number
+        html += '<th class="data_cell"> </th>'  # Blank header for line number
 
         for item in self.model.headers:
             html += '<th class="data_cell">' + item + '</th>'
 
         # Table items - alternate row background colors
-        for i,line in enumerate(self.model.iterate_data()):
+        for i, line in enumerate(self.model.iterate_data()):
 
             if i % 2 == 0:
                 html += '<tr class="data_even">'
@@ -132,7 +136,7 @@ class View:
 
         widgets = []
         widgets.append(ui.HTML(value=html))
-        content.append(self.section(SECTION_TITLE,widgets)) # TODO Constant
+        content.append(self.section(SECTION_TITLE, widgets))
 
         return ui.VBox(content)
 
@@ -140,22 +144,24 @@ class View:
         '''Create widgets for selection tab content'''
         CRITERIA_TITLE = 'Selection Criteria'
         CRITERIA_APPLY = 'Search'
-        OUTPUT_TITLE   = 'Results'
-        OUTPUT_PRE     = 'Limit to '
-        OUTPUT_POST    = 'lines'
-        EXPORT_TITLE   = 'Export'
-        EXPORT_BUTTON  = 'Create Download Link'
-        START_YEAR     = 'From Year'
-        END_YEAR       = 'To Year'
-        
+        OUTPUT_TITLE = 'Results'
+        OUTPUT_PRE = 'Limit to '
+        OUTPUT_POST = 'lines'
+        EXPORT_TITLE = 'Export'
+        EXPORT_BUTTON = 'Create Download Link'
+        START_YEAR = 'From Year'
+        END_YEAR = 'To Year'
+
         # Create widgets
-        self.filter_txt_startyr = ui.Text(description=START_YEAR,value='',placeholder='')
-        self.filter_txt_endyr   = ui.Text(description=END_YEAR,value='',placeholder='')
-        self.filter_btn_apply   = ui.Button(description=CRITERIA_APPLY,icon='filter',layout=self.LO20)
-        self.filter_ddn_ndisp   = ui.Dropdown(options=['25','50','100',self.ALL],layout=self.LO10)
-        self.filter_output      = ui.Output()
-        self.filter_btn_refexp  = ui.Button(description=EXPORT_BUTTON,icon='download',layout=self.LO20)
-        self.filter_out_export  = ui.Output(layout={'border': '1px solid black'})
+        self.filter_txt_startyr = ui.Text(description=START_YEAR, value='', placeholder='')
+        self.filter_txt_endyr = ui.Text(description=END_YEAR, value='', placeholder='')
+        self.filter_btn_apply = ui.Button(description=CRITERIA_APPLY, icon='filter',
+                                          layout=self.LO20)
+        self.filter_ddn_ndisp = ui.Dropdown(options=['25', '50', '100', self.ALL], layout=self.LO10)
+        self.filter_output = ui.Output()
+        self.filter_btn_refexp = ui.Button(description=EXPORT_BUTTON, icon='download',
+                                           layout=self.LO20)
+        self.filter_out_export = ui.Output(layout={'border': '1px solid black'})
 
         self.empty_list_msg()
 
@@ -167,53 +173,55 @@ class View:
         widgets.append(self.filter_txt_startyr)
         widgets.append(self.filter_txt_endyr)
         widgets.append(self.filter_btn_apply)
-        content.append(self.section(CRITERIA_TITLE,widgets))
+        content.append(self.section(CRITERIA_TITLE, widgets))
 
         # Section: Output (with apply button)
 
         widgets = []
 
         row = []
-        row.append(ui.HTML('<div style="text-align: right;">'+OUTPUT_PRE+'</div>',layout=self.LO15))
+        row.append(ui.HTML('<div style="text-align: right;">'+OUTPUT_PRE+'</div>',
+                           layout=self.LO15))
         row.append(self.filter_ddn_ndisp)
-        row.append(ui.HTML('<div style="text-align: left;">' +OUTPUT_POST+'</div>',layout=self.LO10))
+        row.append(ui.HTML('<div style="text-align: left;">' + OUTPUT_POST + '</div>',
+                           layout=self.LO10))
         widgets.append(ui.HBox(row))
 
-        widgets.append(ui.HBox([self.filter_output],layout={'width':'90vw'}))
+        widgets.append(ui.HBox([self.filter_output], layout={'width': '90vw'}))
 
-        content.append(self.section(OUTPUT_TITLE,widgets))
+        content.append(self.section(OUTPUT_TITLE, widgets))
 
         # Section: Export (download)
 
         widgets = []
-        widgets.append(ui.VBox([self.filter_btn_refexp,self.filter_out_export])) # TODO VBox required here?
-        content.append(self.section(EXPORT_TITLE,widgets))
+        widgets.append(ui.VBox([self.filter_btn_refexp, self.filter_out_export]))
+        content.append(self.section(EXPORT_TITLE, widgets))
 
         return ui.VBox(content)
 
     def visualize(self):
         '''Create widgets for visualizea tab content'''
-        NOTE_TITLE    = 'Note'
-        NOTE_TEXT     = 'The plot is based on results from the Selection tab.'
-        PLOT_TITLE    = 'Plot'
-        PLOT_LABEL    = 'Select data field'
+        NOTE_TITLE = 'Note'
+        NOTE_TEXT = 'The plot is based on results from the Selection tab.'
+        PLOT_TITLE = 'Plot'
+        PLOT_LABEL = 'Select data field'
 
         content = []
-        content.append(self.section(NOTE_TITLE,NOTE_TEXT))
+        content.append(self.section(NOTE_TITLE, NOTE_TEXT))
 
-        self.plot_ddn    = ui.Dropdown(options=[self.EMPTY],value=None,disabled=True)
+        self.plot_ddn = ui.Dropdown(options=[self.EMPTY], value=None, disabled=True)
         self.plot_output = ui.Output()
 
         widgets = []
 
         row = []
         row.append(ui.HTML(value=PLOT_LABEL))
-        row.append(ui.Label(value='',layout=ui.Layout(width='60%'))) # Cheat: spacer
+        row.append(ui.Label(value='', layout=ui.Layout(width='60%')))  # Cheat: spacer
         widgets.append(ui.HBox(row))
 
         widgets.append(self.plot_ddn)
         widgets.append(self.plot_output)
-        content.append(self.section(PLOT_TITLE,widgets))
+        content.append(self.section(PLOT_TITLE, widgets))
 
         return ui.VBox(content)
 
@@ -245,7 +253,7 @@ class View:
         ret = []
 
         for i in range(len(self.MODULE_HEADER[1])):
-            pre   = self.MODULE_HEADER[0][i].strip()
+            pre = self.MODULE_HEADER[0][i].strip()
             title = self.MODULE_HEADER[1][i].strip()
 
             if not pre == '':
@@ -255,10 +263,10 @@ class View:
 
         return ret
 
-    def output_data_link(_ ,output_widget, data_str):
+    def output_data_link(_, output_widget, data_str):
         '''Create data URI link to download data'''
 
-        pre  = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
+        pre = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
         post = '">Download</a>'
 
         with output_widget:
@@ -282,10 +290,11 @@ class View:
         if not self.plot_ddn.value == self.EMPTY:
             try:
                 self.plot_output.clear_output(wait=True)
-                
+
                 with self.plot_output:
                     # Render plot - NOTE Assumes data is pandas datatframe TODO Abstract that?
-                    self.model.results.plot(x=self.model.headers[0],y=self.plot_ddn.value,figsize=(15,10))
+                    self.model.results.plot(x=self.model.headers[0], y=self.plot_ddn.value,
+                                            figsize=(15, 10))
 
                     # Update output widget with new plot
                     plt.show()

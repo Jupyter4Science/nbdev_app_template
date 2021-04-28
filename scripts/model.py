@@ -6,6 +6,7 @@ import csv
 import glob
 import pandas as pd
 
+
 class Model:
 
     DATA_DIR = 'data'
@@ -13,62 +14,60 @@ class Model:
     DOWNLOAD_DATA_NAME = 'loti-download'
 
     def __init__(self):
-        self.view      = None
-        self.ctrl      = None
-        self.root      = self.DATA_DIR
-        self.data      = None
-        self.results   = None
+        self.view = None
+        self.ctrl = None
+        self.root = self.DATA_DIR
+        self.data = None
+        self.results = None
         self.res_count = 0
-        self.res_csv   = None
-        self.headers   = ''
-        self.query     = ''
-        self.ymin      = []
-        self.ymax      = []
-        self.valid     = False
+        self.res_csv = None
+        self.headers = ''
+        self.query = ''
+        self.ymin = []
+        self.ymax = []
+        self.valid = False
+        pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
-        pd.set_option('display.width', 1000) # Prevent data description from line breaking
-
-    def intro(self,view,ctrl):
+    def intro(self, view, ctrl):
         '''Introduce MVC modules to each other'''
         self.view = view
         self.ctrl = ctrl
 
     def set_disp(self, data=None, limit=None, wide=False):
         """Prep Pandas to display specific number of data lines"""
-
         if not limit:
             limit = data.shape[0]
 
         pd.set_option('display.max_rows', limit + 1)
 
         if wide:
-            pd.set_option('display.float_format', lambda x: format(x, self.FLOAT_FORMAT))
+            pd.set_option('display.float_format',
+                          lambda x: format(x, self.FLOAT_FORMAT))
 
     def get_data(self):
         '''Load data into memory from file'''
-
-        self.data    = pd.read_csv(os.path.join(self.DATA_DIR,self.DATA_FILE), escapechar='#')
+        self.data = pd.read_csv(os.path.join(self.DATA_DIR, self.DATA_FILE), escapechar='#')
         self.headers = list(self.data.columns.values)
 
         # Get values for data selection
-        self.ymin  = min(self.data[self.data.columns[0]])
-        self.ymax  = max(self.data[self.data.columns[0]])
+        self.ymin = min(self.data[self.data.columns[0]])
+        self.ymax = max(self.data[self.data.columns[0]])
 
         self.valid = True
-
         self.ctrl.logger.debug('Data load completed')
 
     def clear_filter_results(self):
-        self.results   = None
+        self.results = None
         self.res_count = 0
 
-    def search(self,from_year,to_year):
+    def search(self, from_year, to_year):
         '''Use provided values to filter data'''
         try:
-            self.results   = self.data[(self.data[self.headers[0]] >= int(from_year)) & (self.data[self.headers[0]] <= int(to_year))]
+            self.results = self.data[(self.data[self.headers[0]] >= int(from_year)) &
+                                     (self.data[self.headers[0]] <= int(to_year))]
             self.res_count = self.results.shape[0]
             self.ctrl.logger.debug('Results: '+str(self.res_count))
-        except:
+        except Exception as e:
             self.ctrl.logger.debug('Search error!')  # TODO Add exeception text
             self.res_count = 0
 
