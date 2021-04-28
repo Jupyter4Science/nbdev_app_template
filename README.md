@@ -7,7 +7,7 @@ The example notbook uses global temperature data from NASA to show how users can
 
 ## How It Works
 
-Files are organized in a broad "Model-view-controller" ([MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is diveded into three main files under the "scripts" directory. Three classes reside in these files:
+Files are organized in a broad [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is diveded into three main files under the "scripts" directory. Three classes reside in these files:
 
 - "model.py" (class Model): read/write data to/from storage, manage queries
 - "view.py" (class View): create and manage user interface
