@@ -28,11 +28,6 @@ class Model:
         self.valid = False
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
-    def intro(self, view, ctrl):
-        '''Introduce MVC modules to each other'''
-        self.view = view
-        self.ctrl = ctrl
-
     def set_disp(self, data=None, limit=None, wide=False):
         """Prep Pandas to display specific number of data lines"""
         if not limit:
@@ -41,8 +36,7 @@ class Model:
         pd.set_option('display.max_rows', limit + 1)
 
         if wide:
-            pd.set_option('display.float_format',
-                          lambda x: format(x, self.FLOAT_FORMAT))
+            pd.set_option('display.float_format', lambda x: format(x, self.FLOAT_FORMAT))
 
     def get_data(self):
         '''Load data into memory from file'''
@@ -54,7 +48,7 @@ class Model:
         self.ymax = max(self.data[self.data.columns[0]])
 
         self.valid = True
-        self.ctrl.logger.debug('Data load completed')
+        self.ctrl.logger.info('Data load completed')
 
     def clear_filter_results(self):
         self.results = None
@@ -76,14 +70,12 @@ class Model:
 
     def delete_downloads(self, base_name):
         """Remove any existing download file(s) of given name"""
-        self.ctrl.logger.debug('At')
 
         for filename in glob.glob(base_name + '.*'):
             os.remove(filename)
 
     def create_download_file(self, data, file_format_ext):
         """Prep data for export"""
-        self.ctrl.logger.debug('At')
 
         # First, to save space, delete existing download file(s)
         self.delete_downloads(self.DOWNLOAD_DATA_NAME)

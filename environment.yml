@@ -1,0 +1,13 @@
+name: scsa
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - pandas
+  - pycodestyle
+  - ipykernel
+  - jupyterlab
+  - ipywidgets
+  - matplotlib
+prefix: /home/rcampbel/anaconda3/envs/scsa

@@ -4,93 +4,63 @@
 import logging
 import traceback
 
-# Avoids warning: "numpy.dtype size changed, may indicate binary incompatibility"
-import warnings
-warnings.filterwarnings('ignore')
-
-
-class CombineLogFields(logging.Filter):
-    def filter(_, record):
-        record.filename_lineno = "%s:%d" % (record.filename, record.lineno)
-        return True
+from nb import model, view
 
 
 class Controller(logging.Handler):
 
-    VALUE = 'value'  # for observe calls
+    def __init__(self, model, view, log_level=logging.DEBUG):  # to reduce log activity, send logging.INFO
 
-    def __init__(self, log=False, debug=False):
-        self.display_log = log
-        self.debugging = debug  # Add debug info to log?
-        self.debug_buffer = []
-        self.display_ready = False
+        # Ensure mvc objs have refs to each other
+        self.model = model
+        self.view = view
+        self.view.model = model
+        self.view.ctrl = self
+        self.model.view = view
+        self.model.ctrl = self
 
         # Set Controller up as a logger
-
-        if debug:
-            log_format = \
-                    '%(levelname)1.1s %(asctime)s %(filename_lineno)-18s %(message)s (%(funcName)s)'
-            log_level = logging.DEBUG
-        else:
-            log_format = '%(asctime)s %(message)s'
-            log_level = logging.INFO
-
         logging.Handler.__init__(self)
         self.logger = logging.getLogger(__name__)
-        self.setFormatter(logging.Formatter(log_format, '%Y-%m-%dT%H:%M:%S'))
+        self.setFormatter(logging.Formatter('%(message)s (%(filename_lineno)s)'))
         self.logger.addHandler(self)
-        self.logger.addFilter(CombineLogFields())
+        self.logger.addFilter(AppendFileLineToLog())
         self.logger.setLevel(log_level)
         self.setLevel(log_level)
 
-    def intro(self, model, view):
-        '''Introduce MVC modules to each other'''
-        self.model = model
-        self.view = view
-
     def emit(self, message):
-        """Pass new log msg to view for display"""
-        if self.display_log:
-
-            text = self.format(message)
-            self.debug_buffer.append(text)
-
-            if self.display_ready:
-
-                for line in self.debug_buffer:
-                    self.view.debug(line)
-
-                self.debug_buffer = []
+        """Write message to log"""
+        with view.log_output_widget:
+            print(self.format(message))
 
     def start(self):
         '''Load data, build UI, setup callbacks'''
-        self.logger.debug('Starting...')
+        self.logger.info('Starting...')
 
         try:
             # Load data
             self.model.get_data()
 
             # Set up user interface
-            self.view.display(self.display_log)
+            self.view.display()
             self.display_ready = True
-            self.logger.debug('UI ready, log items should appear')
+            self.logger.debug('UI should be ready')
 
             # Connect UI widgets to callback methods ("cb_...").
             # These methods will be run when user changes a widget.
-			# (Note: "on_click()" connects buttons, "observe()" connects other widgets.)
+            # (Note: "on_click()" connects buttons, "observe()" connects other widgets.)
 
             # Format: self.view.<widget_to_watch>.<on_click_or_observe>(method_to_call)
             self.view.filter_btn_apply.on_click(self.cb_apply_filter)
-            self.view.filter_ddn_ndisp.observe(self.cb_ndisp_changed, self.VALUE)
+            self.view.filter_ddn_ndisp.observe(self.cb_ndisp_changed, 'value')
             self.view.filter_btn_refexp.on_click(self.cb_fill_results_export)
-            self.view.plot_ddn.observe(self.cb_plot_type_selected, self.VALUE)
+            self.view.plot_ddn.observe(self.cb_plot_type_selected, 'value')
         except Exception as e:
             self.logger.debug('EXCEPTION\n'+traceback.format_exc())
             raise
 
     def cb_fill_results_export(self, _):
         """User hit button to download results"""
-        self.logger.debug('At')
 
         try:
             # Create link for filter results
@@ -124,3 +94,18 @@ class Controller(logging.Handler):
 
     def cb_plot_type_selected(self, _):
         self.view.plot()
+
+
+class AppendFileLineToLog(logging.Filter):
+    def filter(_, record):
+        record.filename_lineno = "%s:%d" % (record.filename, record.lineno)
+        return True
+
+
+def run():
+    '''Create user interface, set up callbacks, start event loop'''
+    # Create MVC objs, into to one another
+    nb_model = model.Model()
+    nb_view = view.View()
+    nb_ctrl = Controller(nb_model, nb_view)
+    nb_ctrl.start()  # Run the notebook

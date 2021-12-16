@@ -3,8 +3,11 @@
 
 import ipywidgets as ui
 import urllib
+import IPython
 from matplotlib import pyplot as plt
 from IPython.display import display, FileLink
+
+log_output_widget = ui.Output()  # NOTE this widget is not displayed
 
 
 class View:
@@ -21,25 +24,16 @@ class View:
     LO25 = ui.Layout(width='25%')
 
     def __init__(self):
+        self.model = None
+        self.ctrl = None
+        self.log_output = None
         self.tabs = None  # Main UI container
 
-    def intro(self, model, ctrl):
-        self.model = model
-        self.ctrl = ctrl
-
-    def display(self, display_log):
+    def display(self):
         '''Build and show notebook user interface'''
         self.build()
-
-        if display_log:
-            self.debug_output = ui.Output(layout={'border': '1px solid black'})
-            display(ui.VBox([self.tabs, self.section('Log', [self.debug_output])]))
-        else:
-            display(self.tabs)
-
-    def debug(self, text):
-        with self.debug_output:
-            print(text)
+        IPython.display.display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
+        display(self.tabs)
 
     def section(self, title, contents):
         '''Create a collapsible widget container'''
@@ -274,7 +268,6 @@ class View:
 
     def output(self, content, widget):
         """Reset output area with contents (text or data)"""
-        self.ctrl.logger.debug('At')
         widget.clear_output(wait=True)
 
         if isinstance(content, str):
@@ -306,7 +299,6 @@ class View:
 
     def export_link(self, filepath, output):
         """Create data URI link and add it to export output area"""
-        self.ctrl.logger.debug('At')
         output.clear_output()
 
         link = FileLink(filepath, result_html_prefix=self.EXPORT_LINK_PROMPT)
