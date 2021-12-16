@@ -1,13 +1,13 @@
 # view.py - User interface for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
 
-import ipywidgets as ui
+import ipywidgets as widgets
 import urllib
 import IPython
 from matplotlib import pyplot as plt
 from IPython.display import display, FileLink
 
-log_output_widget = ui.Output()  # NOTE this widget is not displayed
+log_output_widget = widgets.Output()  # NOTE this widget is not displayed
 
 
 class View:
@@ -18,10 +18,9 @@ class View:
     FILTER_PROG = 'Searching...'
     EXPORT_LINK_PROMPT = "Click here to save file: "
 
-    LO10 = ui.Layout(width='10%')
-    LO15 = ui.Layout(width='15%')
-    LO20 = ui.Layout(width='20%')
-    LO25 = ui.Layout(width='25%')
+    LO10 = widgets.Layout(width='10%')
+    LO15 = widgets.Layout(width='15%')
+    LO20 = widgets.Layout(width='20%')
 
     def __init__(self):
         self.model = None
@@ -32,16 +31,16 @@ class View:
     def display(self):
         '''Build and show notebook user interface'''
         self.build()
-        IPython.display.display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
+        display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
         display(self.tabs)
 
     def section(self, title, contents):
         '''Create a collapsible widget container'''
 
         if type(contents) == str:
-            contents = [ui.HTML(value=contents)]
+            contents = [widgets.HTML(value=contents)]
 
-        ret = ui.Accordion(children=tuple([ui.VBox(contents)]))
+        ret = widgets.Accordion(children=tuple([widgets.VBox(contents)]))
         ret.set_title(0, title)
         return ret
 
@@ -49,7 +48,7 @@ class View:
         '''Create user interface'''
         TITLES = ['Welcome', 'Data', 'Selection', 'Visualize']
 
-        self.tabs = ui.Tab()
+        self.tabs = widgets.Tab()
 
         # Set title for each tab
         for i in range(len(TITLES)):
@@ -91,7 +90,7 @@ class View:
         content.append(self.section(USING_TITLE, USING_TEXT))
         content.append(self.section(SOURCES_TITLE, SOURCES_TEXT))
 
-        return ui.VBox(content)
+        return widgets.VBox(content)
 
     def data(self):
         '''Create widgets for data tab content'''
@@ -128,11 +127,11 @@ class View:
 
         html += '</table>'
 
-        widgets = []
-        widgets.append(ui.HTML(value=html))
-        content.append(self.section(SECTION_TITLE, widgets))
+        section_list = []
+        section_list.append(widgets.HTML(value=html))
+        content.append(self.section(SECTION_TITLE, section_list))
 
-        return ui.VBox(content)
+        return widgets.VBox(content)
 
     def selection(self):
         '''Create widgets for selection tab content'''
@@ -147,15 +146,15 @@ class View:
         END_YEAR = 'To Year'
 
         # Create widgets
-        self.filter_txt_startyr = ui.Text(description=START_YEAR, value='', placeholder='')
-        self.filter_txt_endyr = ui.Text(description=END_YEAR, value='', placeholder='')
-        self.filter_btn_apply = ui.Button(description=CRITERIA_APPLY, icon='filter',
-                                          layout=self.LO20)
-        self.filter_ddn_ndisp = ui.Dropdown(options=['25', '50', '100', self.ALL], layout=self.LO10)
-        self.filter_output = ui.Output()
-        self.filter_btn_refexp = ui.Button(description=EXPORT_BUTTON, icon='download',
-                                           layout=self.LO20)
-        self.filter_out_export = ui.Output(layout={'border': '1px solid black'})
+        self.filter_txt_startyr = widgets.Text(description=START_YEAR, value='', placeholder='')
+        self.filter_txt_endyr = widgets.Text(description=END_YEAR, value='', placeholder='')
+        self.filter_btn_apply = widgets.Button(description=CRITERIA_APPLY, icon='filter',
+                                               layout=self.LO20)
+        self.filter_ddn_ndisp = widgets.Dropdown(options=['25', '50', '100', self.ALL], layout=self.LO10)
+        self.filter_output = widgets.Output()
+        self.filter_btn_refexp = widgets.Button(description=EXPORT_BUTTON, icon='download',
+                                                layout=self.LO20)
+        self.filter_out_export = widgets.Output(layout={'border': '1px solid black'})
 
         self.empty_list_msg()
 
@@ -163,35 +162,35 @@ class View:
 
         # Section: Selection criteria
 
-        widgets = []
-        widgets.append(self.filter_txt_startyr)
-        widgets.append(self.filter_txt_endyr)
-        widgets.append(self.filter_btn_apply)
-        content.append(self.section(CRITERIA_TITLE, widgets))
+        section_list = []
+        section_list.append(self.filter_txt_startyr)
+        section_list.append(self.filter_txt_endyr)
+        section_list.append(self.filter_btn_apply)
+        content.append(self.section(CRITERIA_TITLE, section_list))
 
         # Section: Output (with apply button)
 
-        widgets = []
+        section_list = []
 
         row = []
-        row.append(ui.HTML('<div style="text-align: right;">'+OUTPUT_PRE+'</div>',
-                           layout=self.LO15))
+        row.append(widgets.HTML('<div style="text-align: right;">'+OUTPUT_PRE+'</div>',
+                                layout=self.LO15))
         row.append(self.filter_ddn_ndisp)
-        row.append(ui.HTML('<div style="text-align: left;">' + OUTPUT_POST + '</div>',
-                           layout=self.LO10))
-        widgets.append(ui.HBox(row))
+        row.append(widgets.HTML('<div style="text-align: left;">' + OUTPUT_POST + '</div>',
+                                layout=self.LO10))
+        section_list.append(widgets.HBox(row))
 
-        widgets.append(ui.HBox([self.filter_output], layout={'width': '90vw'}))
+        section_list.append(widgets.HBox([self.filter_output], layout={'width': '90vw'}))
 
-        content.append(self.section(OUTPUT_TITLE, widgets))
+        content.append(self.section(OUTPUT_TITLE, section_list))
 
         # Section: Export (download)
 
-        widgets = []
-        widgets.append(ui.VBox([self.filter_btn_refexp, self.filter_out_export]))
-        content.append(self.section(EXPORT_TITLE, widgets))
+        section_list = []
+        section_list.append(widgets.VBox([self.filter_btn_refexp, self.filter_out_export]))
+        content.append(self.section(EXPORT_TITLE, section_list))
 
-        return ui.VBox(content)
+        return widgets.VBox(content)
 
     def visualize(self):
         '''Create widgets for visualizea tab content'''
@@ -203,21 +202,21 @@ class View:
         content = []
         content.append(self.section(NOTE_TITLE, NOTE_TEXT))
 
-        self.plot_ddn = ui.Dropdown(options=[self.EMPTY], value=None, disabled=True)
-        self.plot_output = ui.Output()
+        self.plot_ddn = widgets.Dropdown(options=[self.EMPTY], value=None, disabled=True)
+        self.plot_output = widgets.Output()
 
-        widgets = []
+        section_list = []
 
         row = []
-        row.append(ui.HTML(value=PLOT_LABEL))
-        row.append(ui.Label(value='', layout=ui.Layout(width='60%')))  # Cheat: spacer
-        widgets.append(ui.HBox(row))
+        row.append(widgets.HTML(value=PLOT_LABEL))
+        row.append(widgets.Label(value='', layout=widgets.Layout(width='60%')))  # Cheat: spacer
+        section_list.append(widgets.HBox(row))
 
-        widgets.append(self.plot_ddn)
-        widgets.append(self.plot_output)
-        content.append(self.section(PLOT_TITLE, widgets))
+        section_list.append(self.plot_ddn)
+        section_list.append(self.plot_output)
+        content.append(self.section(PLOT_TITLE, section_list))
 
-        return ui.VBox(content)
+        return widgets.VBox(content)
 
     def update_filtered_output(self):
         """Display new data in filtered output"""
@@ -264,14 +263,14 @@ class View:
         post = '">Download</a>'
 
         with output_widget:
-            display(ui.HTML(pre+urllib.parse.quote(data_str)+post))
+            display(widgets.HTML(pre+urllib.parse.quote(data_str)+post))
 
     def output(self, content, widget):
         """Reset output area with contents (text or data)"""
         widget.clear_output(wait=True)
 
         if isinstance(content, str):
-            content = ui.HTML(content)
+            content = widgets.HTML(content)
 
         with widget:
             display(content)
