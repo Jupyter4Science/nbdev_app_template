@@ -1,23 +1,50 @@
-<!-- header.html: Notebook-specific CSS, title, JS -->
+<!-- header.html: Notebook-specific CSS, JS, title -->
 <style>
-.this_nb_title {
-    font-weight: bold;
-    color: steelblue;
-    background-color: transparent;
-    font-size: 22px;
-    border: 0px;
-    padding: 0px;
-}
-.selmono {
-    font-family: "Lucida Console", Monaco, monospace !important;
-    width: 100%;
-}
-.widget-select > select {
-    font-family: monospace !important;
-}
-/* Cause plotly to display "modebar" */
-.container {
-    min-width: 1200px !important;
-}
+    :root {
+        /* Theme colors, darkest (...0) to lightest (...3 */
+        --jp-brand-color0: #555960;
+        --jp-brand-color1: #6F727B;
+        --jp-brand-color2: #9D9795;
+        --jp-brand-color3: #C4BFC0;
+    }
+    /* Title sytle: big, with theme colored font */
+    .this_nb_title {
+        font-weight: bold;
+        color: var(--jp-brand-color0);
+        background-color: transparent;
+        font-size: 20px;
+        border: 0px;
+        padding: 0px;
+    }
+    /* Tab sytle: thick tab, them colored text */
+    .p-TabBar-tabLabel {
+        font-weight: bold !important;
+        color: var(--jp-brand-color0) !important;
+        margin-top: 1em !important;
+        margin-bottom: 1em !important;
+    }
+    /* Section header style: white on then color */
+    .p-Collapse-header {
+        color: white !important;
+        background-color: var(--jp-brand-color2) !important;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        font-weight: normal !important;
+    }
 </style>
+<script>
+    // Hide jupyter icon and header when in appmode
+    if (document.getElementById('appmode-leave')) {
+        var h = document.getElementById('header');
+        if (h) {
+            h.style.display = 'none';
+        }
+    } else {
+        var h = document.getElementById('header');
+        if (h) {
+            h.style.display = 'block';
+        }
+    }
+</script>
+<!-- Title text -->
 <span class="this_nb_title">Land-Ocean Temperature Index</span>

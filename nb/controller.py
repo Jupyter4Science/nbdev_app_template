@@ -3,15 +3,32 @@
 
 import logging
 import traceback
+from jupyterthemes import jtplot
 
 from nb import model, view
+
+
+def run():
+    '''Create user interface, set up callbacks, start event loop'''
+    # Create MVC objs, into to one another
+    nb_model = model.Model()
+    nb_view = view.View()
+    nb_ctrl = Controller(nb_model, nb_view)
+    nb_ctrl.start()  # Run the notebook
+
+
+class AppendFileLineToLog(logging.Filter):
+    """Custom logging format"""
+    def filter(_, record):
+        record.filename_lineno = "%s:%d" % (record.filename, record.lineno)
+        return True
 
 
 class Controller(logging.Handler):
 
     def __init__(self, model, view, log_level=logging.DEBUG):  # to reduce log activity, send logging.INFO
 
-        # Ensure mvc objs have refs to each other
+        # Give mvc objs have refs to each other
         self.model = model
         self.view = view
         self.view.model = model
@@ -48,14 +65,13 @@ class Controller(logging.Handler):
 
             # Connect UI widgets to callback methods ("cb_...").
             # These methods will be run when user changes a widget.
-            # (Note: "on_click()" connects buttons, "observe()" connects other widgets.)
-
-            # Format: self.view.<widget_to_watch>.<on_click_or_observe>(method_to_call)
+            # NOTE "on_click()" connects buttons, "observe()" connects other widgets.
             self.view.filter_btn_apply.on_click(self.cb_apply_filter)
             self.view.filter_ddn_ndisp.observe(self.cb_ndisp_changed, 'value')
             self.view.filter_btn_refexp.on_click(self.cb_fill_results_export)
             self.view.plot_ddn.observe(self.cb_plot_type_selected, 'value')
-        except Exception as e:
+            self.view.apply.on_click(self.cb_apply_theme)
+        except Exception:
             self.logger.debug('EXCEPTION\n'+traceback.format_exc())
             raise
 
@@ -95,17 +111,13 @@ class Controller(logging.Handler):
     def cb_plot_type_selected(self, _):
         self.view.plot()
 
-
-class AppendFileLineToLog(logging.Filter):
-    def filter(_, record):
-        record.filename_lineno = "%s:%d" % (record.filename, record.lineno)
-        return True
-
-
-def run():
-    '''Create user interface, set up callbacks, start event loop'''
-    # Create MVC objs, into to one another
-    nb_model = model.Model()
-    nb_view = view.View()
-    nb_ctrl = Controller(nb_model, nb_view)
-    nb_ctrl.start()  # Run the notebook
+    def cb_apply_theme(self, _):
+        jtplot.style(theme=self.view.theme.value,
+                     context=self.view.context.value,
+                     fscale=self.view.fscale.value,
+                     spines=self.view.spines.value,
+                     gridlines=self.view.gridlines.value,
+                     ticks=self.view.ticks.value,
+                     grid=self.view.grid.value,
+                     figsize=(self.view.figsize1.value, self.view.figsize2.value))
+        jtplot.reset()

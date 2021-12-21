@@ -4,6 +4,7 @@
 import ipywidgets as widgets
 import urllib
 import IPython
+from ipywidgets.widgets.widget_description import DescriptionStyle
 from matplotlib import pyplot as plt
 from IPython.display import display, FileLink
 
@@ -26,6 +27,7 @@ class View:
         self.model = None
         self.ctrl = None
         self.log_output = None
+        self.theme = None
         self.tabs = None  # Main UI container
 
     def display(self):
@@ -46,7 +48,7 @@ class View:
 
     def build(self):
         '''Create user interface'''
-        TITLES = ['Welcome', 'Data', 'Selection', 'Visualize']
+        TITLES = ['Welcome', 'Data', 'Selection', 'Visualize', 'Settings']
 
         self.tabs = widgets.Tab()
 
@@ -60,6 +62,7 @@ class View:
         tab_content.append(self.data())
         tab_content.append(self.selection())
         tab_content.append(self.visualize())
+        tab_content.append(self.settings())
 
         # Fill with content
         self.tabs.children = tuple(tab_content)
@@ -93,45 +96,15 @@ class View:
         return widgets.VBox(content)
 
     def data(self):
-        '''Create widgets for data tab content'''
+        '''Show data tab content'''
         SECTION_TITLE = 'Data'
 
-        content = []
+        out = widgets.Output()
 
-        # Set table format using CSS and start the HTML table
-        html = '''<style>
-                        .data_cell {padding-right: 32px     }
-                        .data_even {background   : White    }
-                        .data_odd  {background   : Gainsboro}
-                    </style><table>'''
+        with out:
+            display(self.model.data)
 
-        # Table column headers
-
-        html += '<th class="data_cell"> </th>'  # Blank header for line number
-
-        for item in self.model.headers:
-            html += '<th class="data_cell">' + item + '</th>'
-
-        # Table items - alternate row background colors
-        for i, line in enumerate(self.model.iterate_data()):
-
-            if i % 2 == 0:
-                html += '<tr class="data_even">'
-            else:
-                html += '<tr class="data_odd">'
-
-            for item in line:
-                html += '<td class="data_cell">' + str(item) + '</td>'
-
-            html += '</tr>'
-
-        html += '</table>'
-
-        section_list = []
-        section_list.append(widgets.HTML(value=html))
-        content.append(self.section(SECTION_TITLE, section_list))
-
-        return widgets.VBox(content)
+        return self.section(SECTION_TITLE, [out])
 
     def selection(self):
         '''Create widgets for selection tab content'''
@@ -217,6 +190,32 @@ class View:
         content.append(self.section(PLOT_TITLE, section_list))
 
         return widgets.VBox(content)
+
+    def settings(self):
+        self.theme = widgets.Dropdown(description='Theme',
+                                      options=['onedork', 'grade3', 'oceans16', 'chesterish',
+                                               'monokai', 'solarizedl', 'solarizedd'])
+        self.context = widgets.Dropdown(description='Context',
+                                        options=['paper', 'notebook', 'talk', 'poster'])
+        self.fscale = widgets.FloatSlider(description='F Scale', value=1.4)
+        self.spines = widgets.Checkbox(description='Spines', value=False)
+        self.gridlines = widgets.Text(description='Gridlines', value='--')
+        self.ticks = widgets.Checkbox(description='Ticks', value=True)
+        self.grid = widgets.Checkbox(description='Grid', value=False)
+        self.figsize1 = widgets.FloatSlider(description='Fig Size 1', value=6)
+        self.figsize2 = widgets.FloatSlider(description='Fig Size 2', value=4.5)
+        self.apply = widgets.Button(description='Apply')
+
+        return(self.section('Theme', [self.theme,
+                                      self.context,
+                                      self.fscale,
+                                      self.spines,
+                                      self.gridlines,
+                                      self.ticks,
+                                      self.grid,
+                                      self.figsize1,
+                                      self.figsize2,
+                                      self.apply]))
 
     def update_filtered_output(self):
         """Display new data in filtered output"""
