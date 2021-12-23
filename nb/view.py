@@ -1,5 +1,6 @@
 # view.py - User interface for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
+import nb.mvc
 
 import ipywidgets as widgets
 import urllib
@@ -7,8 +8,6 @@ import IPython
 from ipywidgets.widgets.widget_description import DescriptionStyle
 from matplotlib import pyplot as plt
 from IPython.display import display, FileLink
-
-log_output_widget = widgets.Output()  # NOTE this widget is not displayed
 
 
 class View:
@@ -24,11 +23,17 @@ class View:
     LO20 = widgets.Layout(width='20%')
 
     def __init__(self):
-        self.model = None
-        self.ctrl = None
         self.log_output = None
         self.theme = None
         self.tabs = None  # Main UI container
+        self.log_output_widget = widgets.Output()  # NOTE this widget is not displayed
+
+    @staticmethod
+    def start():
+        global ctrl
+        global model
+        ctrl = nb.mvc.ctrl
+        model = nb.mvc.model
 
     def display(self):
         '''Build and show notebook user interface'''
@@ -102,7 +107,7 @@ class View:
         out = widgets.Output()
 
         with out:
-            display(self.model.data)
+            display(model.data)
 
         return self.section(SECTION_TITLE, [out])
 
@@ -220,23 +225,23 @@ class View:
     def update_filtered_output(self):
         """Display new data in filtered output"""
 
-        if self.model.res_count < 1:
+        if model.res_count < 1:
             self.output(self.EMPTY_LIST_MSG, self.filter_output)
         else:
             # Calc output line limit
             if self.filter_ddn_ndisp.value == self.ALL:
-                limit = self.model.res_count
+                limit = model.res_count
             else:
                 limit = int(self.filter_ddn_ndisp.value)
 
-            self.model.set_disp(limit=limit)
-            self.output(self.model.results.head(limit), self.filter_output)
+            model.set_disp(limit=limit)
+            self.output(model.results.head(limit), self.filter_output)
 
     def set_plot_status(self):
         """Change status of plot-related widgets based on availability of filter results"""
-        if self.model.res_count > 0:
+        if model.res_count > 0:
             self.plot_ddn.disabled = False
-            self.plot_ddn.options = [self.EMPTY]+self.model.headers[1:]
+            self.plot_ddn.options = [self.EMPTY]+model.headers[1:]
         else:
             self.plot_ddn.disabled = True
 
@@ -284,12 +289,12 @@ class View:
 
                 with self.plot_output:
                     # Render plot - NOTE Assumes data is pandas datatframe TODO Abstract that?
-                    self.model.results.plot(x=self.model.headers[0], y=self.plot_ddn.value,
-                                            figsize=(15, 10))
+                    model.results.plot(x=model.headers[0], y=self.plot_ddn.value,
+                                       figsize=(15, 10))
 
                     # Update output widget with new plot
                     plt.show()
-                    self.ctrl.logger.debug('after plt.show()')
+                    ctrl.logger.debug('after plt.show()')
             except Exception:
                 plt.close()  # Clear any partial plot output
                 self.logger.debug('raising exception')

@@ -23,7 +23,7 @@ At this point, the running code simply waits for the user to make changes to use
 
 When widgets' .value properties are changd, they immediatly update themselves and the changes are automatically reflected in the browser page. So, the code does not need to call an update method or explicitly trigger an event.
 
-For example, the view creates a button named "filter_btn_apply". The controller specifies that, when this button is pressed, its "cb_apply_filter()" method should be called ("self.view.filter_btn_apply.on_click(self.cb_apply_filter)"). The "cb_apply_filter()" method then directs the model to perform the query and the view to update the output.
+For example, the view creates a button named "filter_btn_apply". The controller specifies that, when this button is pressed, its "cb_apply_filter()" method should be called ("view.filter_btn_apply.on_click(self.cb_apply_filter)"). The "cb_apply_filter()" method then directs the model to perform the query and the view to update the output.
 
 A couple notes...
 
@@ -34,7 +34,7 @@ A couple notes...
 2. Logging / Debugging
     - The controller is also a Python logging handler. It outputs items from info and debug logging calls to the "Log" at the bottom of the page.
     - The "Log" can be hidden if needed. Or, it can be displayed during development and hidden prior to publishng the app.
-    - The "Log" is a quick way to perform simple [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques)  ("self.ctrl.logger.debug('Results: '+str(self.res_count))").
+    - The "Log" is a quick way to perform simple [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques)  ("ctrl.logger.debug('Results: '+str(self.res_count))").
     - Controller parameters values (loti.ipynb: "loti_controller.Controller(log=True,debug=True)") determine wheter the log is displayed or hidden and whether debug items are included in it.
 
 ## Running on your workstation
@@ -121,6 +121,3 @@ Use this command to run the "dev mode" docker image:
 ```
 docker run -p 8866:8866 --mount type=bind,src=<full_path_to_repo>,target=/home/jovyan/external <dev_image_name>
 ```
-
-
-
