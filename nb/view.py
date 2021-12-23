@@ -1,6 +1,5 @@
 # view.py - User interface for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
-import nb.mvc
 
 import ipywidgets as widgets
 import urllib
@@ -29,11 +28,12 @@ class View:
         self.log_output_widget = widgets.Output()  # NOTE this widget is not displayed
 
     @staticmethod
-    def start():
+    def start(nb_model, nb_ctrl):
+        """Create module-level global variable(s)"""
         global ctrl
         global model
-        ctrl = nb.mvc.ctrl
-        model = nb.mvc.model
+        ctrl = nb_ctrl
+        model = nb_model
 
     def display(self):
         '''Build and show notebook user interface'''

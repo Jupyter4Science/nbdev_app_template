@@ -1,6 +1,5 @@
 # model.py - Storage access for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
-import nb.mvc
 
 import os
 import csv
@@ -28,9 +27,10 @@ class Model:
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
     @staticmethod
-    def start():
+    def start(nb_ctrl):
+        """Create module-level global variable(s)"""
         global ctrl
-        ctrl = nb.mvc.ctrl
+        ctrl = nb_ctrl
 
     def set_disp(self, data=None, limit=None, wide=False):
         """Prep Pandas to display specific number of data lines"""

@@ -1,6 +1,5 @@
 # controller.py - Central logic for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
-import nb.mvc
 
 import logging
 import traceback
@@ -27,11 +26,12 @@ class Controller(logging.Handler):
         self.setLevel(log_level)
 
     @staticmethod
-    def start():
+    def start(nb_model, nb_view):
+        """Create module-level global variable(s)"""
         global model
         global view
-        model = nb.mvc.model
-        view = nb.mvc.view
+        model = nb_model
+        view = nb_view
 
     def emit(self, message):
         """Write message to log"""
