@@ -24,15 +24,16 @@ class View:
         self.log_output = None
         self.theme = None
         self.tabs = None  # Main UI container
-        self.log_output_widget = widgets.Output()  # NOTE this widget is not displayed
 
     @staticmethod
-    def start(nb_model, nb_ctrl):
+    def start(mvc_model, mvc_ctrl, mvc_logger):
         """Create module-level global variable(s)"""
         global ctrl
         global model
-        ctrl = nb_ctrl
-        model = nb_model
+        global logger
+        ctrl = mvc_ctrl
+        model = mvc_model
+        logger = mvc_logger
 
     def display(self):
         '''Build and show notebook user interface'''
@@ -293,7 +294,7 @@ class View:
 
                     # Update output widget with new plot
                     plt.show()
-                    ctrl.logger.debug('after plt.show()')
+                    logger.debug('after plt.show()')
             except Exception:
                 plt.close()  # Clear any partial plot output
                 self.logger.debug('raising exception')

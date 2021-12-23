@@ -27,10 +27,12 @@ class Model:
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
     @staticmethod
-    def start(nb_ctrl):
+    def start(_, mvc_ctrl, mvc_logger):
         """Create module-level global variable(s)"""
         global ctrl
-        ctrl = nb_ctrl
+        global logger
+        ctrl = mvc_ctrl
+        logger = mvc_logger
 
     def set_disp(self, data=None, limit=None, wide=False):
         """Prep Pandas to display specific number of data lines"""
@@ -52,7 +54,7 @@ class Model:
         self.ymax = max(self.data[self.data.columns[0]])
 
         self.valid = True
-        ctrl.logger.info('Data load completed')
+        logger.info('Data load completed')
 
     def clear_filter_results(self):
         self.results = None
@@ -64,9 +66,9 @@ class Model:
             self.results = self.data[(self.data[self.headers[0]] >= int(from_year)) &
                                      (self.data[self.headers[0]] <= int(to_year))]
             self.res_count = self.results.shape[0]
-            ctrl.logger.debug('Results: '+str(self.res_count))
+            logger.debug('Results: '+str(self.res_count))
         except Exception as e:
-            ctrl.logger.debug('Search error!')  # TODO Add exeception text
+            logger.debug('Search error!')  # TODO Add exeception text
             self.res_count = 0
 
     def iterate_data(self):

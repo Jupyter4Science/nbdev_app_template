@@ -1,46 +1,25 @@
 # controller.py - Central logic for loti notebook
 # rcampbel@purdue.edu - 2020-07-14
 
-import logging
 import traceback
 from jupyterthemes import jtplot
 
 
-class AppendFileLineToLog(logging.Filter):
-    """Custom logging format"""
-    def filter(_, record):
-        record.filename_lineno = "%s:%d" % (record.filename, record.lineno)
-        return True
-
-
-class Controller(logging.Handler):
-
-    def __init__(self, log_level=logging.DEBUG):  # to reduce log activity, send logging.INFO
-        # Set Controller up as a logger
-        logging.Handler.__init__(self)
-        self.logger = logging.getLogger(__name__)
-        self.setFormatter(logging.Formatter('%(message)s (%(filename_lineno)s)'))
-        self.logger.addHandler(self)
-        self.logger.addFilter(AppendFileLineToLog())
-        self.logger.setLevel(log_level)
-        self.setLevel(log_level)
+class Controller():
 
     @staticmethod
-    def start(nb_model, nb_view):
+    def start(mvc_model, mvc_view, mvc_logger):
         """Create module-level global variable(s)"""
         global model
         global view
-        model = nb_model
-        view = nb_view
-
-    def emit(self, message):
-        """Write message to log"""
-        with view.log_output_widget:
-            print(self.format(message))
+        global logger
+        model = mvc_model
+        view = mvc_view
+        logger = mvc_logger
 
     def run(self):
         '''Load data, build UI, setup callbacks'''
-        self.logger.info('Starting...')
+        logger.info('Starting...')
 
         try:
             # Load data
@@ -49,7 +28,7 @@ class Controller(logging.Handler):
             # Set up user interface
             view.display()
             self.display_ready = True
-            self.logger.debug('UI should be ready')
+            logger.debug('UI should be ready')
 
             # Connect UI widgets to callback methods ("cb_...").
             # These methods will be run when user changes a widget.
@@ -60,7 +39,7 @@ class Controller(logging.Handler):
             view.plot_ddn.observe(self.cb_plot_type_selected, 'value')
             view.apply.on_click(self.cb_apply_theme)
         except Exception:
-            self.logger.debug('EXCEPTION\n'+traceback.format_exc())
+            logger.debug('EXCEPTION\n'+traceback.format_exc())
             raise
 
     def cb_fill_results_export(self, _):
@@ -72,7 +51,7 @@ class Controller(logging.Handler):
                 filename = model.create_download_file(model.results, 'csv')
                 view.export_link(filename, view.filter_out_export)
         except Exception:
-            self.logger.debug('EXCEPTION\n' + traceback.format_exc())
+            logger.debug('EXCEPTION\n' + traceback.format_exc())
             raise
 
     def cb_apply_filter(self, _):
