@@ -197,30 +197,33 @@ class View:
         return widgets.VBox(content)
 
     def settings(self):
-        self.theme = widgets.Dropdown(description='Theme',
-                                      options=['onedork', 'grade3', 'oceans16', 'chesterish',
-                                               'monokai', 'solarizedl', 'solarizedd'])
-        self.context = widgets.Dropdown(description='Context',
-                                        options=['paper', 'notebook', 'talk', 'poster'])
-        self.fscale = widgets.FloatSlider(description='F Scale', value=1.4)
-        self.spines = widgets.Checkbox(description='Spines', value=False)
-        self.gridlines = widgets.Text(description='Gridlines', value='--')
-        self.ticks = widgets.Checkbox(description='Ticks', value=True)
-        self.grid = widgets.Checkbox(description='Grid', value=False)
-        self.figsize1 = widgets.FloatSlider(description='Fig Size 1', value=6)
-        self.figsize2 = widgets.FloatSlider(description='Fig Size 2', value=4.5)
-        self.apply = widgets.Button(description='Apply')
+        SECTION_TITLE = 'Plot Settings'
+        THEME = 'Theme'
+        THEMES = ['onedork', 'grade3', 'oceans16', 'chesterish', 'monokai', 'solarizedl', 'solarizedd']
+        CONTEXT = 'Context'
+        CONTEXTS = ['paper', 'notebook', 'talk', 'poster']
+        FONT_SCALE = 'Font Scale'
+        SPINES = 'Spines'
+        GRIDLINES = 'Gridlines'
+        TICKS = 'Ticks'
+        GRID = 'Grid'
+        FIG_WIDTH = 'Width'
+        FIG_HEIGHT = 'Height'
+        APPLY = 'Apply'
 
-        return(self.section('Theme', [self.theme,
-                                      self.context,
-                                      self.fscale,
-                                      self.spines,
-                                      self.gridlines,
-                                      self.ticks,
-                                      self.grid,
-                                      self.figsize1,
-                                      self.figsize2,
-                                      self.apply]))
+        self.theme = widgets.Dropdown(description=THEME, options=THEMES)
+        self.context = widgets.Dropdown(description=CONTEXT, options=CONTEXTS)
+        self.fscale = widgets.FloatSlider(description=FONT_SCALE, value=1.4)
+        self.spines = widgets.Checkbox(description=SPINES, value=False)
+        self.gridlines = widgets.Text(description=GRIDLINES, value='--')
+        self.ticks = widgets.Checkbox(description=TICKS, value=True)
+        self.grid = widgets.Checkbox(description=GRID, value=False)
+        self.figsize1 = widgets.FloatSlider(description=FIG_WIDTH, value=6)
+        self.figsize2 = widgets.FloatSlider(description=FIG_HEIGHT, value=4.5)
+        self.apply = widgets.Button(description=APPLY)
+
+        return(self.section(SECTION_TITLE, [self.theme, self.context, self.fscale, self.spines, self.gridlines,
+                                            self.ticks, self.grid, self.figsize1, self.figsize2, self.apply]))
 
     def update_filtered_output(self):
         """Display new data in filtered output"""
@@ -283,21 +286,25 @@ class View:
         self.output(self.EMPTY_LIST_MSG, self.filter_output)
 
     def plot(self):
+        TITLE = 'Land-Ocean Temperature Index'
+
         if not self.plot_ddn.value == self.EMPTY:
             try:
                 self.plot_output.clear_output(wait=True)
 
                 with self.plot_output:
-                    # Render plot - NOTE Assumes data is pandas datatframe TODO Abstract that?
-                    model.results.plot(x=model.headers[0], y=self.plot_ddn.value,
-                                       figsize=(15, 10))
+                    plt.plot(model.results[model.headers[0]], model.results[self.plot_ddn.value])
+                    plt.xlabel(model.headers[0])
+                    plt.ylabel(self.plot_ddn.value)
+                    plt.suptitle(TITLE)
+                    plt.show()
 
                     # Update output widget with new plot
                     plt.show()
                     logger.debug('after plt.show()')
             except Exception:
                 plt.close()  # Clear any partial plot output
-                self.logger.debug('raising exception')
+                logger.debug('raising exception')
                 raise
 
     def export_link(self, filepath, output):
