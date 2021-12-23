@@ -4,7 +4,6 @@
 import ipywidgets as widgets
 import urllib
 import IPython
-from ipywidgets.widgets.widget_description import DescriptionStyle
 from matplotlib import pyplot as plt
 from IPython.display import display, FileLink
 
