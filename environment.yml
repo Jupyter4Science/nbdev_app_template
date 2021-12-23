@@ -3,11 +3,11 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.6
+  - ipykernel
+  - ipywidgets
+  - jupyterlab
+  - jupyterthemes
+  - matplotlib
   - pandas
   - pycodestyle
-  - ipykernel
-  - jupyterlab
-  - ipywidgets
-  - matplotlib
-prefix: /home/rcampbel/anaconda3/envs/scsa
+  - python=3.8
