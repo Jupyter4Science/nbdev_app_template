@@ -7,6 +7,7 @@ import nb.controller
 
 import logging
 import ipywidgets as widgets
+from IPython.display import display
 
 
 class AppendFileLineToLog(logging.Filter):
@@ -17,6 +18,7 @@ class AppendFileLineToLog(logging.Filter):
 
 
 class NotebookLogger(logging.Handler):
+    """Format log entries and make them appear in Jupyter Lab's log output"""
 
     def __init__(self, log_level):
         logging.Handler.__init__(self)
@@ -29,13 +31,18 @@ class NotebookLogger(logging.Handler):
         with self.log_output_widget:
             print(self.format(message))
 
+    def show(self):
+        display(self.log_output_widget)
 
-def run(log_level=logging.DEBUG):  # NOTE Use logging.INFO to reduce log activity
+
+def run(debug=False, show_log=False):
     """Create MVC objects, start UI"""
 
     # Create logger
+    log_level = logging.DEBUG if debug else logging.INFO
+    log_handler = NotebookLogger(log_level)
     logger = logging.getLogger(__name__)
-    logger.addHandler(NotebookLogger(log_level))
+    logger.addHandler(log_handler)
     logger.addFilter(AppendFileLineToLog())
     logger.setLevel(log_level)
 
@@ -51,3 +58,6 @@ def run(log_level=logging.DEBUG):  # NOTE Use logging.INFO to reduce log activit
 
     # Run the UI
     ctrl.run()
+
+    if show_log:
+        log_handler.show()
