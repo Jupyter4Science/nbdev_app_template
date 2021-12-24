@@ -1,9 +1,11 @@
-# SCSA - Self-Contained Science App
-A code template for building data publication web apps.
+![Python logo](https://www.python.org/ "Python")
+
+# nbtmpl - Notebook Template
+A code template and example for building data publication web apps.
 
 This repository contains a Jupyter notebook and associated Python code. It shows how to use [Jupyter](https://jupyter.org/), [Python](https://www.python.org/), [pandas](https://pandas.pydata.org/), and [Matplotlib](https://matplotlib.org/) to build web-enabled applications. Further, it demonstrates the use of [Docker](https://www.docker.com/) and [Voilà](https://github.com/voila-dashboards/voila) to allow this type of application to be hosted on composable infrastructure.
 
-The template was developed for to enable researchers to put thier work on the web without the need of web developer skills. The example notbook uses global temperature data from NASA to show how users can view, search, download, and plot data.
+The template was developed for to enable researchers to put thier work on the web without the need of web developer skills. The example notbook uses global temperature data from NASA to show how users can view, search, download, and plot data using an interactive, web enabled tool.
 
 ## How It Works
 
