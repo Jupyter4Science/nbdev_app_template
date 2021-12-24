@@ -1,19 +1,19 @@
 # SCSA - Self-Contained Science App
-A code template for building data publication and exploration tools and web applications.
+A code template for building data publication web apps.
 
-This repository contains a Jupyter notebook and associated code. It is intended as an example or template for createing data publications applications. You can run the notebook using "jupyter notebook", browsing to "localhost:8888", and opening "loti.ipynb", Or you can use Docker to run it using Voila.
+This repository contains a Jupyter notebook and associated Python code. It shows how to use [Jupyter](https://jupyter.org/), [Python](https://www.python.org/), [pandas](https://pandas.pydata.org/), and [Matplotlib](https://matplotlib.org/) to build web-enabled applications. Further, it demonstrates the use of [Docker](https://www.docker.com/) and [Voilà](https://github.com/voila-dashboards/voila) to allow this type of application to be hosted on composable infrastructure.
 
-The example notbook uses global temperature data from NASA to show how users can view, search, download, and plot data.
+The template was developed for to enable researchers to put thier work on the web without the need of web developer skills. The example notbook uses global temperature data from NASA to show how users can view, search, download, and plot data.
 
 ## How It Works
 
-Files are organized in a broad [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is diveded into three main files under the "scripts" directory. Three classes reside in these files:
+Source code is organized in a broad [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is diveded into three main files in the "nb" directory. Three classes reside in these files:
 
 - "model.py" (class Model): read/write data to/from storage, manage queries
 - "view.py" (class View): create and manage user interface
-- "controller.py" (class Controller): Create model and view, respond to user actions
+- "controller.py" (class Controller): Coordinate model and view, respond to user actions
 
-The Jupyter notebook ('loti.ipynb") contains just one code cell. Here, model, view, and control objects are created and introduced to each other. Then, the controller's "start()" method is called to start the application running. Here, the controller does three things:
+The Jupyter notebook ('loti.ipynb") contains just one code cell. Model, view, and control objects are created and introduced to each other. Then, the controller's "start()" method is called to start the application running. Here, the controller does three things:
 
 - Asks the model to prepare the data (read the data from storage)
 - Asks the view to build the user interace (create and display [ipywidgets](https://ipywidgets.readthedocs.io/en/stable/) UI controls - aka "widgets")
