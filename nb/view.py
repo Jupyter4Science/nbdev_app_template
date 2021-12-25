@@ -176,7 +176,7 @@ class View:
                                 layout=self.LO10))
         section_list.append(widgets.HBox(row))
 
-        section_list.append(widgets.HBox([self.filter_output], layout={'width': '90vw'}))
+        section_list.append(widgets.HBox([self.filter_output])) # NOTE Use "layout={'width': '90vw'}" to widen
 
         content.append(self.section(OUTPUT_TITLE, section_list))
 
