@@ -1,4 +1,4 @@
-name: scsa
+name: nbtmpl
 channels:
   - conda-forge
   - defaults
