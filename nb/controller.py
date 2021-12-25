@@ -1,4 +1,4 @@
-# controller.py - Central logic for loti notebook
+# controller.py - Central logic for notebook
 # rcampbel@purdue.edu - 2020-07-14
 
 import traceback
@@ -8,7 +8,7 @@ from jupyterthemes import jtplot
 class Controller():
 
     @staticmethod
-    def start(mvc_model, mvc_view, mvc_logger):
+    def set_globals(mvc_model, mvc_view, mvc_logger):
         """Create module-level global variable(s)"""
         global model
         global view
@@ -17,18 +17,13 @@ class Controller():
         view = mvc_view
         logger = mvc_logger
 
-    def run(self):
+    def startup(self):
         '''Load data, build UI, setup callbacks'''
         logger.info('Starting...')
 
         try:
-            # Load data
-            model.get_data()
-
-            # Set up user interface
-            view.display()
-            self.display_ready = True
-            logger.debug('UI should be ready')
+            model.startup()  # Load data
+            view.startup()  # Build user interface
 
             # Connect UI widgets to callback methods ("cb_...").
             # These methods will be run when user changes a widget.
@@ -37,7 +32,9 @@ class Controller():
             view.filter_ddn_ndisp.observe(self.cb_ndisp_changed, 'value')
             view.filter_btn_refexp.on_click(self.cb_fill_results_export)
             view.plot_ddn.observe(self.cb_plot_type_selected, 'value')
-            view.apply.on_click(self.cb_apply_theme)
+            view.apply.on_click(self.cb_apply_plot_settings)
+
+            logger.debug('UI should be ready')
         except Exception:
             logger.debug('EXCEPTION\n'+traceback.format_exc())
             raise
@@ -66,7 +63,7 @@ class Controller():
         self.cb_refresh_filter_output()
 
     def cb_refresh_filter_output(self):
-        # Enable or disable controls based on filter results
+        """Enable or disable controls based on filter results."""
         if model.res_count > 0:
             view.update_filtered_output()
         else:
@@ -78,7 +75,7 @@ class Controller():
     def cb_plot_type_selected(self, _):
         view.plot()
 
-    def cb_apply_theme(self, _):
+    def cb_apply_plot_settings(self, _):
         jtplot.style(theme=view.theme.value,
                      context=view.context.value,
                      fscale=view.fscale.value,

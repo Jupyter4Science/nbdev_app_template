@@ -1,4 +1,4 @@
-# view.py - User interface for loti notebook
+# view.py - User interface for notebook
 # rcampbel@purdue.edu - 2020-07-14
 
 import ipywidgets as widgets
@@ -9,24 +9,43 @@ from IPython.display import display, FileLink
 
 
 class View:
-
     EMPTY_LIST_MSG = '''<br>(There's no data to display.)'''
     ALL = 'All'
     EMPTY = ''
     FILTER_PROG = 'Searching...'
     EXPORT_LINK_PROMPT = "Click here to save file: "
-
     LO10 = widgets.Layout(width='10%')
     LO15 = widgets.Layout(width='15%')
     LO20 = widgets.Layout(width='20%')
 
     def __init__(self):
-        self.log_output = None
+        # Filer ("Selection" tab) controls
+        self.filter_txt_startyr = None
+        self.filter_txt_endyr = None
+        self.filter_btn_apply = None
+        self.filter_ddn_ndisp = None
+        self.filter_output = None
+        self.filter_btn_refexp = None
+        self.filter_out_export = None
+
+        # Plot ("Visualize" tab) controls
+        self.plot_ddn = None
+        self.plot_output = None
+
+        # Settings controls
         self.theme = None
-        self.tabs = None  # Main UI container
+        self.context = None
+        self.fscale = None
+        self.spines = None
+        self.gridlines = None
+        self.ticks = None
+        self.grid = None
+        self.figsize1 = None
+        self.figsize2 = None
+        self.apply = None
 
     @staticmethod
-    def start(mvc_model, mvc_ctrl, mvc_logger):
+    def set_globals(mvc_model, mvc_ctrl, mvc_logger):
         """Create module-level global variable(s)"""
         global ctrl
         global model
@@ -35,14 +54,8 @@ class View:
         model = mvc_model
         logger = mvc_logger
 
-    def display(self):
-        '''Build and show notebook user interface'''
-        self.build()
-        display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
-        display(self.tabs)
-
     def section(self, title, contents):
-        '''Create a collapsible widget container'''
+        '''Utility method that create a collapsible widget container'''
 
         if type(contents) == str:
             contents = [widgets.HTML(value=contents)]
@@ -51,28 +64,33 @@ class View:
         ret.set_title(0, title)
         return ret
 
-    def build(self):
+    def startup(self):
+        '''Build and show notebook user interface'''
         '''Create user interface'''
         TITLES = ['Welcome', 'Data', 'Selection', 'Visualize', 'Settings']
 
-        self.tabs = widgets.Tab()
+        tabs = widgets.Tab()
 
         # Set title for each tab
         for i in range(len(TITLES)):
-            self.tabs.set_title(i, TITLES[i])
+            tabs.set_title(i, TITLES[i])
 
         # Build conent (widgets) for each tab
         tab_content = []
-        tab_content.append(self.welcome())
-        tab_content.append(self.data())
-        tab_content.append(self.selection())
-        tab_content.append(self.visualize())
-        tab_content.append(self.settings())
+        tab_content.append(self.welcome_content())
+        tab_content.append(self.data_content())
+        tab_content.append(self.selection_content())
+        tab_content.append(self.visualize_content())
+        tab_content.append(self.settings_content())
 
-        # Fill with content
-        self.tabs.children = tuple(tab_content)
+        # Fill tabs with content
+        tabs.children = tuple(tab_content)
 
-    def welcome(self):
+        # Output header and tabs
+        display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
+        display(tabs)
+
+    def welcome_content(self):
         '''Create widgets for introductory tab content'''
         USING_TITLE = 'Using This App'
         USING_TEXT = '''<p>
@@ -100,7 +118,7 @@ class View:
 
         return widgets.VBox(content)
 
-    def data(self):
+    def data_content(self):
         '''Show data tab content'''
         SECTION_TITLE = 'Data'
 
@@ -111,7 +129,7 @@ class View:
 
         return self.section(SECTION_TITLE, [out])
 
-    def selection(self):
+    def selection_content(self):
         '''Create widgets for selection tab content'''
         CRITERIA_TITLE = 'Selection Criteria'
         CRITERIA_APPLY = 'Search'
@@ -170,7 +188,7 @@ class View:
 
         return widgets.VBox(content)
 
-    def visualize(self):
+    def visualize_content(self):
         '''Create widgets for visualizea tab content'''
         NOTE_TITLE = 'Note'
         NOTE_TEXT = 'The plot is based on results from the Selection tab.'
@@ -196,7 +214,7 @@ class View:
 
         return widgets.VBox(content)
 
-    def settings(self):
+    def settings_content(self):
         SECTION_TITLE = 'Plot Settings'
         THEME = 'Theme'
         THEMES = ['onedork', 'grade3', 'oceans16', 'chesterish', 'monokai', 'solarizedl', 'solarizedd']

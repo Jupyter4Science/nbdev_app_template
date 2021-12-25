@@ -1,4 +1,4 @@
-# model.py - Storage access for loti notebook
+# model.py - Storage access for notebook
 # rcampbel@purdue.edu - 2020-07-14
 
 import os
@@ -8,7 +8,6 @@ import pandas as pd
 
 
 class Model:
-
     DATA_DIR = 'data'
     DATA_FILE = 'loti.csv'
     DOWNLOAD_DATA_NAME = 'loti-download'
@@ -23,11 +22,10 @@ class Model:
         self.query = ''
         self.ymin = []
         self.ymax = []
-        self.valid = False
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
     @staticmethod
-    def start(_, mvc_ctrl, mvc_logger):
+    def set_globals(_, mvc_ctrl, mvc_logger):
         """Create module-level global variable(s)"""
         global ctrl
         global logger
@@ -44,7 +42,7 @@ class Model:
         if wide:
             pd.set_option('display.float_format', lambda x: format(x, self.FLOAT_FORMAT))
 
-    def get_data(self):
+    def startup(self):
         '''Load data into memory from file'''
         self.data = pd.read_csv(os.path.join(self.DATA_DIR, self.DATA_FILE), escapechar='#')
         self.headers = list(self.data.columns.values)
@@ -53,7 +51,6 @@ class Model:
         self.ymin = min(self.data[self.data.columns[0]])
         self.ymax = max(self.data[self.data.columns[0]])
 
-        self.valid = True
         logger.info('Data load completed')
 
     def clear_filter_results(self):

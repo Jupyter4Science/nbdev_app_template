@@ -1,4 +1,4 @@
-# mvc.py - Common code for loti notebook
+# mvc.py - Common code for notebook
 # rcampbel@purdue.edu - 2020-07-14
 
 import nb.model
@@ -52,12 +52,11 @@ def run(debug=False, show_log=False):
     ctrl = nb.controller.Controller()
 
     # Give mvc objects access to each other and logger
-    model.start(view, ctrl, logger)
-    view.start(model, ctrl, logger)
-    ctrl.start(model, view, logger)
+    model.set_globals(view, ctrl, logger)
+    view.set_globals(model, ctrl, logger)
+    ctrl.set_globals(model, view, logger)
 
-    # Run the UI
-    ctrl.run()
+    ctrl.startup()  # Run the UI
 
     if show_log:
         log_handler.show()
