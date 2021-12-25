@@ -33,35 +33,33 @@ Source code is organized in a loose [Model-view-controller](https://en.wikipedia
 
 The Jupyter notebook ('notebook.ipynb") contains just one code cell. This kicks of the model/view/controler code and the web app starts running.
 
-The code relies on [widgets](https://en.wikipedia.org/wiki/Graphical_widget) and [callbacks](https://en.wikipedia.org/wiki/Callback_(computer_programming) methods. Once its up and running, the code waits for the user to make changes to user interface widgets. But widget updates also work in both directions. When the user interacts with a widget in their browser, an assigned callback method runs. And when some code changes a widget, theose changes appear in the browser.
+The code relies on [widgets](https://en.wikipedia.org/wiki/Graphical_widget) and [callbacks](https://en.wikipedia.org/wiki/Callback_(computer_programming)) methods. Once its up and running, the code waits for the user to make changes to user interface widgets. But widget updates also work in both directions. When the user interacts with a widget in their browser, an assigned callback method runs. And when some code changes a widget, those changes appear in the browser.
 
 For example, the view object creates a button named "filter_btn_apply". The controller specifies that, when this button is pressed, its "cb_apply_filter()" method is called ("view.filter_btn_apply.on_click(self.cb_apply_filter)"). The "cb_apply_filter()" method then directs the model to perform the query and then the view to update the output widget ("output()" updates self.filter_output).
 
 ## Developing and testing on your workstation
 
-The template requires Python, Jupyter, and a number of Python packages. Follow the steps below to ensure all dependencies are installed and configured propery. The Andaconda package management system is used to create an environment for running the notebook. Anaconda's "conda" command will be used to automatically install required packages and their dependecies.
+The template requires Python, Jupyter, and a number of Python packages. Follow the steps below to ensure all dependencies are installed and configured propery. The Andaconda package management system is used to create an environment for running the notebook. Anaconda's `conda` command will be used to automatically install required packages and their dependecies.
 
 ### Create the conda environment (one time only)
 1. Install [Anaconda](https://www.anaconda.com/products/individual) on your system.
-1. At the OS command line, run: "```conda env create --file environment.yml```". This creates a conda environment called "nbtmpl" and installs software modules. Answer "y" to prompts.
+1. At the OS command line, run: `conda env create --file environment.yml`. This creates a conda environment called "nbtmpl" and installs software modules. Answer "y" to prompts.
 
 ### Activate the conda environment
-1. Next, enter "```conda activate nbtmpl```". This changes your current command line environemnt so the code has access to required software packages. You should see "(nbtmpl)" at the beginning of your command line prompt.
+1. Next, enter `conda activate nbtmpl`. This changes your current command line environemnt so the code has access to required software packages. You should see `(nbtmpl)` at the beginning of your command line prompt.
 1. NOTE: You'll need to run this command _every time you start up Jupyter to develop and test your code_.
 
 ### Start Jupyter and run the notebook
-1. At a command line, enter `conda activate nbtmpl`  # Invokes AWB environment
-1. Enter "jupyter lab". (See [Starting JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html) for more info.
-1. Browse to the nbtmpl directory and double click on the "notebook.ipynb" file.
+1. At a command line, enter `conda activate nbtmpl`
+1. Enter `jupyter lab`. (See [Starting JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html) for more info.
+1. Browse to the nbtmpl directory and double click on the `notebook.ipynb` file.
 1. Click the "Restart kernel...re-run...notebook" button (double trinangle icon).
 1. When prompted, click the "Restart" button.
 1. NOTE: Later, when the notebook and code runs as a web app, only the title, tabs, and tab content will appear. The Jupyter Lab UI and the notebook's code cell will not appear.
 
 ### Debugging
-For simple bugs, use the log and [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques)  ("logger.debug(...)") to display values of variables. The log can viewed in Jupyter Lab's "Log Console" (menu: View --> Show Log Console). Set "Log Level" to
+For simple bugs, use the log and [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques) (`logger.debug(...)`) to display values of variables. The log can viewed in Jupyter Lab's "Log Console" (menu: View --> Show Log Console). Set "Log Level" to
 "Debug". For more difficult bugs, use Jupyter Lab's [debugger](https://jupyterlab.readthedocs.io/en/stable/user/debugger.html). Set a breakpoint in the line of code in the notebook (after the import). Using the debugger, run to that breakpoing. Then, step into the mvc code and set more breakpoints as needed.
-
-
 
 ## Demonstrating the web app on your workstation
 
