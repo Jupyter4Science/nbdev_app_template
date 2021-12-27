@@ -52,7 +52,7 @@ class Controller():
         try:
             view.filter_out_export.clear_output()
             model.clear_filter_results()  # New search attempt so reset
-            model.search(view.filter_txt_startyr.value, view.filter_txt_endyr.value)
+            model.filter_data(view.filter_txt_startyr.value, view.filter_txt_endyr.value)
         except Exception:
             logger.debug('Exception while filtering data...\n'+traceback.format_exc())
 

@@ -57,7 +57,7 @@ class Model:
         self.results = None
         self.res_count = 0
 
-    def search(self, from_year, to_year):
+    def filter_data(self, from_year, to_year):
         '''Use provided values to filter data'''
         self.results = self.data[(self.data[self.headers[0]] >= int(from_year)) &
                                  (self.data[self.headers[0]] <= int(to_year))]
