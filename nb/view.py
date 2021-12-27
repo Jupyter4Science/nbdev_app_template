@@ -44,16 +44,6 @@ class View:
         self.figsize2 = None
         self.apply = None
 
-    @staticmethod
-    def set_globals(mvc_model, mvc_ctrl, mvc_logger):
-        """Create module-level global variable(s)"""
-        global ctrl
-        global model
-        global logger
-        ctrl = mvc_ctrl
-        model = mvc_model
-        logger = mvc_logger
-
     def section(self, title, contents):
         '''Utility method that create a collapsible widget container'''
 
@@ -64,9 +54,19 @@ class View:
         ret.set_title(0, title)
         return ret
 
-    def startup(self):
-        '''Build and show notebook user interface'''
-        '''Create user interface'''
+    def startup(self, mvc_model, mvc_ctrl, mvc_logger):
+        """Make post __init__() preparations"""
+
+        # Create module-level global variable(s)
+        global ctrl
+        global model
+        global logger
+        ctrl = mvc_ctrl
+        model = mvc_model
+        logger = mvc_logger
+
+        # Create user interface
+
         TITLES = ['Welcome', 'Data', 'Selection', 'Visualize', 'Settings']
 
         tabs = widgets.Tab()

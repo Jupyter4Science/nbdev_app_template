@@ -24,13 +24,24 @@ class Model:
         self.ymax = []
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
-    @staticmethod
-    def set_globals(_, mvc_ctrl, mvc_logger):
-        """Create module-level global variable(s)"""
+    def startup(self, _, mvc_ctrl, mvc_logger):
+        """Make post __init__() preparations"""
+
+        # Create module-level global variable(s)
         global ctrl
         global logger
         ctrl = mvc_ctrl
         logger = mvc_logger
+
+        # Load data into memory from file
+        self.data = pd.read_csv(os.path.join(self.DATA_DIR, self.DATA_FILE), escapechar='#')
+        self.headers = list(self.data.columns.values)
+
+        # Get values for data selection
+        self.ymin = min(self.data[self.data.columns[0]])
+        self.ymax = max(self.data[self.data.columns[0]])
+
+        logger.info('Data load completed')
 
     def set_disp(self, data=None, limit=None, wide=False):
         """Prep Pandas to display specific number of data lines"""
@@ -41,17 +52,6 @@ class Model:
 
         if wide:
             pd.set_option('display.float_format', lambda x: format(x, self.FLOAT_FORMAT))
-
-    def startup(self):
-        '''Load data into memory from file'''
-        self.data = pd.read_csv(os.path.join(self.DATA_DIR, self.DATA_FILE), escapechar='#')
-        self.headers = list(self.data.columns.values)
-
-        # Get values for data selection
-        self.ymin = min(self.data[self.data.columns[0]])
-        self.ymax = max(self.data[self.data.columns[0]])
-
-        logger.info('Data load completed')
 
     def clear_filter_results(self):
         self.results = None

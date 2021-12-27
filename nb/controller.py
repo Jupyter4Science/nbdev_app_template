@@ -7,9 +7,10 @@ from jupyterthemes import jtplot
 
 class Controller():
 
-    @staticmethod
-    def set_globals(mvc_model, mvc_view, mvc_logger):
-        """Create module-level global variable(s)"""
+    def startup(self, mvc_model, mvc_view, mvc_logger):
+        """Make post __init__() preparations"""
+
+        # Create module-level global variable(s)
         global model
         global view
         global logger
@@ -17,14 +18,10 @@ class Controller():
         view = mvc_view
         logger = mvc_logger
 
-    def startup(self):
-        '''Load data, build UI, setup callbacks'''
         logger.info('Starting...')
 
+        # Setup callbacks
         try:
-            model.startup()  # Load data
-            view.startup()  # Build user interface
-
             # Connect UI widgets to callback methods ("cb_...").
             # These methods will be run when user changes a widget.
             # NOTE "on_click()" connects buttons, "observe()" connects other widgets.

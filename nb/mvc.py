@@ -52,11 +52,9 @@ def run(debug=False, show_log=False):
     ctrl = nb.controller.Controller()
 
     # Give mvc objects access to each other and logger
-    model.set_globals(view, ctrl, logger)
-    view.set_globals(model, ctrl, logger)
-    ctrl.set_globals(model, view, logger)
-
-    ctrl.startup()  # Run the UI
+    model.startup(view, ctrl, logger)  # Load data
+    view.startup(model, ctrl, logger)  # Build user interface
+    ctrl.startup(model, view, logger)  # Run the UI
 
     if show_log:
         log_handler.show()
