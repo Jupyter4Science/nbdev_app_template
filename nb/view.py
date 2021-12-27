@@ -132,7 +132,7 @@ class View:
     def selection_content(self):
         '''Create widgets for selection tab content'''
         CRITERIA_TITLE = 'Selection Criteria'
-        CRITERIA_APPLY = 'Search'
+        CRITERIA_APPLY = 'Filter'
         OUTPUT_TITLE = 'Results'
         OUTPUT_PRE = 'Limit to '
         OUTPUT_POST = 'lines'
@@ -169,11 +169,9 @@ class View:
         section_list = []
 
         row = []
-        row.append(widgets.HTML('<div style="text-align: right;">'+OUTPUT_PRE+'</div>',
-                                layout=self.LO15))
+        row.append(widgets.HTML('<div style="text-align: right;">'+OUTPUT_PRE+'</div>', layout=self.LO15))
         row.append(self.filter_ddn_ndisp)
-        row.append(widgets.HTML('<div style="text-align: left;">' + OUTPUT_POST + '</div>',
-                                layout=self.LO10))
+        row.append(widgets.HTML('<div style="text-align: left;">' + OUTPUT_POST + '</div>', layout=self.LO10))
         section_list.append(widgets.HBox(row))
 
         section_list.append(widgets.HBox([self.filter_output]))  # NOTE Use "layout={'width': '90vw'}" to widen
