@@ -59,29 +59,20 @@ class Model:
 
     def search(self, from_year, to_year):
         '''Use provided values to filter data'''
-        try:
-            self.results = self.data[(self.data[self.headers[0]] >= int(from_year)) &
-                                     (self.data[self.headers[0]] <= int(to_year))]
-            self.res_count = self.results.shape[0]
-            logger.debug('Results: '+str(self.res_count))
-        except Exception as e:
-            logger.debug('Search error!')  # TODO Add exeception text
-            self.res_count = 0
+        self.results = self.data[(self.data[self.headers[0]] >= int(from_year)) &
+                                 (self.data[self.headers[0]] <= int(to_year))]
+        self.res_count = self.results.shape[0]
+        logger.debug('Results: '+str(self.res_count))
 
     def iterate_data(self):
         return self.data.itertuples()
-
-    def delete_downloads(self, base_name):
-        """Remove any existing download file(s) of given name"""
-
-        for filename in glob.glob(base_name + '.*'):
-            os.remove(filename)
 
     def create_download_file(self, data, file_format_ext):
         """Prep data for export"""
 
         # First, to save space, delete existing download file(s)
-        self.delete_downloads(self.DOWNLOAD_DATA_NAME)
+        for filename in glob.glob(self.DOWNLOAD_DATA_NAME + '.*'):
+            os.remove(filename)
 
         # Create new download file TODO Other download formats
         filename = self.DOWNLOAD_DATA_NAME + '.' + file_format_ext

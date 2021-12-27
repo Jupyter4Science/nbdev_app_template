@@ -176,7 +176,7 @@ class View:
                                 layout=self.LO10))
         section_list.append(widgets.HBox(row))
 
-        section_list.append(widgets.HBox([self.filter_output])) # NOTE Use "layout={'width': '90vw'}" to widen
+        section_list.append(widgets.HBox([self.filter_output]))  # NOTE Use "layout={'width': '90vw'}" to widen
 
         content.append(self.section(OUTPUT_TITLE, section_list))
 
@@ -283,7 +283,6 @@ class View:
 
     def output_data_link(_, output_widget, data_str):
         '''Create data URI link to download data'''
-
         pre = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
         post = '">Download</a>'
 

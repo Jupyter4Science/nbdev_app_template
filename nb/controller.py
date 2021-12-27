@@ -33,27 +33,29 @@ class Controller():
 
             logger.debug('UI should be ready')
         except Exception:
-            logger.debug('EXCEPTION\n'+traceback.format_exc())
+            logger.debug('Exception whil setting up callbacks...\n'+traceback.format_exc())
             raise
 
     def cb_fill_results_export(self, _):
         """User hit button to download results"""
-
         try:
             # Create link for filter results
             if model.res_count > 0:
                 filename = model.create_download_file(model.results, 'csv')
                 view.export_link(filename, view.filter_out_export)
         except Exception:
-            logger.debug('EXCEPTION\n' + traceback.format_exc())
+            logger.debug('Exception during download creation...\n' + traceback.format_exc())
             raise
 
     def cb_apply_filter(self, _):
         '''React to apply filter button press'''
+        try:
+            view.filter_out_export.clear_output()
+            model.clear_filter_results()  # New search attempt so reset
+            model.search(view.filter_txt_startyr.value, view.filter_txt_endyr.value)
+        except Exception:
+            logger.debug('Exception while filtering data...\n'+traceback.format_exc())
 
-        view.filter_out_export.clear_output()
-        model.clear_filter_results()  # New search attempt so reset
-        model.search(view.filter_txt_startyr.value, view.filter_txt_endyr.value)
         self.cb_refresh_filter_output()
 
     def cb_ndisp_changed(self, _):
