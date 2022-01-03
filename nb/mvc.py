@@ -24,7 +24,7 @@ class NotebookLogger(logging.Handler):
         logging.Handler.__init__(self)
         self.setFormatter(logging.Formatter('%(message)s (%(filename_lineno)s)'))
         self.setLevel(log_level)
-        self.log_output_widget = widgets.Output()  # NOTE This widget is not displayed
+        self.log_output_widget = widgets.Output()
 
     def emit(self, message):
         """Write message to log"""
@@ -54,7 +54,7 @@ def run(debug=False, show_log=False):
     # Give mvc objects access to each other and logger
     model.startup(view, ctrl, logger)  # Load data
     view.startup(model, ctrl, logger)  # Build user interface
-    ctrl.startup(model, view, logger)  # Run the UI
+    ctrl.startup(model, view, logger)  # Run the app
 
     if show_log:
         log_handler.show()
