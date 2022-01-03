@@ -330,3 +330,6 @@ class View:
 
         with output:
             display(link)
+
+
+view = View()

@@ -79,3 +79,6 @@ class Model:
         data.to_csv(filename, index=False, quoting=csv.QUOTE_NONNUMERIC)
 
         return filename
+
+
+model = Model()

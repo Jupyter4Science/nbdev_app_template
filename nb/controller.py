@@ -83,3 +83,6 @@ class Controller():
                      ticks=view.ticks.value,
                      grid=view.grid.value,
                      figsize=(view.figsize1.value, view.figsize2.value))
+
+
+ctrl = Controller()

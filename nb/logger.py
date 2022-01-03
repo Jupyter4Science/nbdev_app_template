@@ -1,11 +1,7 @@
-# mvc.py - Common code for notebook
+# logger.py - Logging for notebook
 # rcampbel@purdue.edu - 2020-07-14
 
-import nb.model
-import nb.view
-import nb.controller
-
-import logging
+import logging  # NOTE: This is Python's logging module, not this custom module
 import ipywidgets as widgets
 from IPython.display import display
 
@@ -17,7 +13,7 @@ class AppendFileLineToLog(logging.Filter):
         return True
 
 
-class NotebookLogger(logging.Handler):
+class NotebookLoggingHandler(logging.Handler):
     """Format log entries and make them appear in Jupyter Lab's log output"""
 
     def __init__(self, log_level):
@@ -35,26 +31,21 @@ class NotebookLogger(logging.Handler):
         display(self.log_output_widget)
 
 
-def run(debug=False, show_log=False):
-    """Create MVC objects, start UI"""
+logger = logging.getLogger(__name__)
+log_handler = NotebookLoggingHandler(logging.INFO)
+logger.addHandler(log_handler)
+logger.addFilter(AppendFileLineToLog())
+logger.setLevel(logging.INFO)
 
-    # Create logger
-    log_level = logging.DEBUG if debug else logging.INFO
-    log_handler = NotebookLogger(log_level)
-    logger = logging.getLogger(__name__)
-    logger.addHandler(log_handler)
-    logger.addFilter(AppendFileLineToLog())
-    logger.setLevel(log_level)
 
-    # Create mvc objects
-    model = nb.model.Model()
-    view = nb.view.View()
-    ctrl = nb.controller.Controller()
+def set_debug(debug=False):
 
-    # Give mvc objects access to each other and logger
-    model.startup(view, ctrl, logger)  # Load data
-    view.startup(model, ctrl, logger)  # Build user interface
-    ctrl.startup(model, view, logger)  # Run the app
+    if debug:
+        log_handler.setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
 
-    if show_log:
+
+def show_log_widget(show=False):
+
+    if show:
         log_handler.show()
