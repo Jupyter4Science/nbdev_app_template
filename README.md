@@ -10,7 +10,7 @@ A Python code template for building web apps without writing HTML, CSS. and Java
     </td><td width="14%">
     <b>ipywidgets</b>
     </td><td width="14%">
-    <img src="https://jupyter.org/assets/nav_logo.svg" alt="jupyter logo">
+    <img src="https://jupyter.org/assets/logos/rectanglelogo-greytext-orangebody-greymoons.svg" alt="jupyter logo">
     </td><td width="10%">
     <img src="https://raw.githubusercontent.com/voila-dashboards/voila/main/docs/source/voila-logo.svg" alt="voila logo">
     </td><td width="14%">
