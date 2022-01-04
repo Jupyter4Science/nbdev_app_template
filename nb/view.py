@@ -80,6 +80,7 @@ class View:
         # Output header and tabs
         display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
         display(tabs)
+        logger.info('UI build completed')
 
         # Optionally show a widget containing log items
         if log:

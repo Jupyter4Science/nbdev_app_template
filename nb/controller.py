@@ -24,7 +24,7 @@ class Controller():
             view.filter_btn_refexp.on_click(self.cb_fill_results_export)
             view.plot_ddn.observe(self.cb_plot_type_selected, 'value')
             view.apply.on_click(self.cb_apply_plot_settings)
-            logger.debug('UI should be ready')
+            logger.info('App running')
         except Exception:
             logger.debug('Exception while setting up callbacks...\n'+traceback.format_exc())
             raise
