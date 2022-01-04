@@ -7,18 +7,12 @@ from jupyterthemes import jtplot
 
 class Controller():
 
-    def startup(self, mvc_model, mvc_view, mvc_logger):
+    def start(self):
         """Make post __init__() preparations"""
 
-        # Create module-level global variable(s)
-        global model
-        global view
-        global logger
-        model = mvc_model
-        view = mvc_view
-        logger = mvc_logger
-
-        logger.info('Starting...')
+        # Create module-level globals
+        global model, view, logger
+        from nb.cfg import model, view, logger
 
         # Setup callbacks
         try:
@@ -30,10 +24,9 @@ class Controller():
             view.filter_btn_refexp.on_click(self.cb_fill_results_export)
             view.plot_ddn.observe(self.cb_plot_type_selected, 'value')
             view.apply.on_click(self.cb_apply_plot_settings)
-
             logger.debug('UI should be ready')
         except Exception:
-            logger.debug('Exception whil setting up callbacks...\n'+traceback.format_exc())
+            logger.debug('Exception while setting up callbacks...\n'+traceback.format_exc())
             raise
 
     def cb_fill_results_export(self, _):
@@ -83,6 +76,3 @@ class Controller():
                      ticks=view.ticks.value,
                      grid=view.grid.value,
                      figsize=(view.figsize1.value, view.figsize2.value))
-
-
-ctrl = Controller()

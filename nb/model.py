@@ -24,14 +24,12 @@ class Model:
         self.ymax = []
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
-    def startup(self, _, mvc_ctrl, mvc_logger):
+    def start(self):
         """Make post __init__() preparations"""
 
-        # Create module-level global variable(s)
-        global ctrl
-        global logger
-        ctrl = mvc_ctrl
-        logger = mvc_logger
+        # Create module-level globals
+        global ctrl, view, logger
+        from nb.cfg import ctrl, view, logger
 
         # Load data into memory from file
         self.data = pd.read_csv(os.path.join(self.DATA_DIR, self.DATA_FILE), escapechar='#')
@@ -79,6 +77,3 @@ class Model:
         data.to_csv(filename, index=False, quoting=csv.QUOTE_NONNUMERIC)
 
         return filename
-
-
-model = Model()

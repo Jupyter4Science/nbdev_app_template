@@ -2,8 +2,9 @@
 # rcampbel@purdue.edu - 2020-07-14
 
 import ipywidgets as widgets
-import urllib
 import IPython
+import logging
+import urllib
 from matplotlib import pyplot as plt
 from IPython.display import display, FileLink
 
@@ -12,7 +13,6 @@ class View:
     EMPTY_LIST_MSG = '''<br>(There's no data to display.)'''
     ALL = 'All'
     EMPTY = ''
-    FILTER_PROG = 'Searching...'
     EXPORT_LINK_PROMPT = "Click here to save file: "
     LO10 = widgets.Layout(width='10%')
     LO15 = widgets.Layout(width='15%')
@@ -44,26 +44,17 @@ class View:
         self.figsize2 = None
         self.apply = None
 
-    def section(self, title, contents):
-        '''Utility method that create a collapsible widget container'''
-
-        if type(contents) == str:
-            contents = [widgets.HTML(value=contents)]
-
-        ret = widgets.Accordion(children=tuple([widgets.VBox(contents)]))
-        ret.set_title(0, title)
-        return ret
-
-    def startup(self, mvc_model, mvc_ctrl, mvc_logger):
+    def start(self, log=False):
         """Make post __init__() preparations"""
 
-        # Create module-level global variable(s)
-        global ctrl
-        global model
-        global logger
-        ctrl = mvc_ctrl
-        model = mvc_model
-        logger = mvc_logger
+        # Create module-level globals
+        global model, ctrl, logger
+        from nb.cfg import model, ctrl, logger, log_handler
+
+        # Optionally show additional info in log
+        if log:
+            log_handler.setLevel(logging.DEBUG)
+            logger.setLevel(logging.DEBUG)
 
         # Create user interface
 
@@ -89,6 +80,20 @@ class View:
         # Output header and tabs
         display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
         display(tabs)
+
+        # Optionally show a widget containing log items
+        if log:
+            display(log_handler.log_output_widget)
+
+    def section(self, title, contents):
+        '''Utility method that create a collapsible widget container'''
+
+        if type(contents) == str:
+            contents = [widgets.HTML(value=contents)]
+
+        ret = widgets.Accordion(children=tuple([widgets.VBox(contents)]))
+        ret.set_title(0, title)
+        return ret
 
     def welcome_content(self):
         '''Create widgets for introductory tab content'''
@@ -264,29 +269,6 @@ class View:
         else:
             self.plot_ddn.disabled = True
 
-    def get_module_export_header(self):
-        '''Generate module output header for export'''
-        ret = []
-
-        for i in range(len(self.MODULE_HEADER[1])):
-            pre = self.MODULE_HEADER[0][i].strip()
-            title = self.MODULE_HEADER[1][i].strip()
-
-            if not pre == '':
-                title = pre + ' ' + title
-
-            ret.append(title)
-
-        return ret
-
-    def output_data_link(_, output_widget, data_str):
-        '''Create data URI link to download data'''
-        pre = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
-        post = '">Download</a>'
-
-        with output_widget:
-            display(widgets.HTML(pre+urllib.parse.quote(data_str)+post))
-
     def output(self, content, widget):
         """Reset output area with contents (text or data)"""
         widget.clear_output(wait=True)
@@ -331,5 +313,27 @@ class View:
         with output:
             display(link)
 
+    # NOTE Method below is currently unused. Remains for reference
+    def get_module_export_header(self):
+        '''Generate module output header for export'''
+        ret = []
 
-view = View()
+        for i in range(len(self.MODULE_HEADER[1])):
+            pre = self.MODULE_HEADER[0][i].strip()
+            title = self.MODULE_HEADER[1][i].strip()
+
+            if not pre == '':
+                title = pre + ' ' + title
+
+            ret.append(title)
+
+        return ret
+
+    # NOTE Method below is currently unused. Remains for reference
+    def output_data_link(_, output_widget, data_str):
+        '''Create data URI link to download data'''
+        pre = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
+        post = '">Download</a>'
+
+        with output_widget:
+            display(widgets.HTML(pre+urllib.parse.quote(data_str)+post))

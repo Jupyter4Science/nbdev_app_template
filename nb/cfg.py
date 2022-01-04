@@ -1,9 +1,12 @@
-# logger.py - Logging for notebook
-# rcampbel@purdue.edu - 2020-07-14
+# cfg.py - Global variables for notebook
+# rcampbel@purdue.edu - 2022-01-05
 
-import logging  # NOTE: This is Python's logging module, not this custom module
+import logging
 import ipywidgets as widgets
-from IPython.display import display
+
+from nb.model import Model
+from nb.view import View
+from nb.controller import Controller
 
 
 class AppendFileLineToLog(logging.Filter):
@@ -27,9 +30,6 @@ class NotebookLoggingHandler(logging.Handler):
         with self.log_output_widget:
             print(self.format(message))
 
-    def show(self):
-        display(self.log_output_widget)
-
 
 logger = logging.getLogger(__name__)
 log_handler = NotebookLoggingHandler(logging.INFO)
@@ -38,14 +38,6 @@ logger.addFilter(AppendFileLineToLog())
 logger.setLevel(logging.INFO)
 
 
-def set_debug(debug=False):
-
-    if debug:
-        log_handler.setLevel(logging.DEBUG)
-        logger.setLevel(logging.DEBUG)
-
-
-def show_log_widget(show=False):
-
-    if show:
-        log_handler.show()
+model = Model()
+view = View()
+ctrl = Controller()
