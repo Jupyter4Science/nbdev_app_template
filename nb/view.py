@@ -19,7 +19,7 @@ class View:
         self.filter_txt_endyr: widgets.Text
         self.filter_btn_apply: widgets.Button
         self.filter_ddn_ndisp: widgets.Dropdown
-        self.filter_output: widgets.Output = None  # "None" delays output unitl widget is created
+        self.filter_output: widgets.Output
         self.filter_btn_refexp: widgets.Button
         self.filter_out_export: widgets.Output
 
