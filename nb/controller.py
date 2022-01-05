@@ -73,6 +73,7 @@ class Controller():
 
             if not view.plot_ddn.value == Const.EMPTY:
                 view.plot_output.clear_output(wait=True)
+                # TODO Add ability to download plot as an image
 
                 with view.plot_output:
                     plt.plot(model.results[model.headers[0]], model.results[view.plot_ddn.value])
