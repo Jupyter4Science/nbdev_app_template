@@ -1,4 +1,4 @@
-# view.py - User interface for notebook
+# view.py - User interface for app
 # rcampbel@purdue.edu - 2020-07-14
 
 import ipywidgets as widgets

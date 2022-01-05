@@ -1,4 +1,4 @@
-# controller.py - Central logic for notebook
+# controller.py - Central logic for app
 # rcampbel@purdue.edu - 2020-07-14
 
 import traceback

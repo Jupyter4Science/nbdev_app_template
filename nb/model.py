@@ -1,4 +1,4 @@
-# model.py - Storage access for notebook
+# model.py - Storage access for app
 # rcampbel@purdue.edu - 2020-07-14
 
 import os
