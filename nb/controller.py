@@ -20,8 +20,6 @@ class Controller():
         with view.data_preview_out:
             display(model.data)
 
-        #view.set_no_data()  # Show "empty list" msg
-
         # Setup callbacks
         try:
             # Connect UI widgets to callback methods ("cb_...").

@@ -171,6 +171,8 @@ class View:
                              self.ticks, self.grid, self.figsize1, self.figsize2, self.apply]))
 
     def set_no_data(self):
+        """Indicate there are no results."""
+        # NOTE While the other view methods build the UI, this one acts an example of a helper method
 
         with self.filter_output:
             clear_output(wait=True)
