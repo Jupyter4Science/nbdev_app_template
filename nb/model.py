@@ -8,12 +8,8 @@ import pandas as pd
 
 
 class Model:
-    DATA_DIR = 'data'
-    DATA_FILE = 'loti.csv'
-    DOWNLOAD_DATA_NAME = 'loti-download'
 
     def __init__(self):
-        self.root = self.DATA_DIR
         self.data = None
         self.results = None
         self.res_count = 0
@@ -27,12 +23,12 @@ class Model:
     def start(self):
         """Make post __init__() preparations"""
 
-        # Create module-level globals
-        global ctrl, view, logger
-        from nb.cfg import ctrl, view, logger
+        # Create module-level singletons
+        global logger, Const
+        from nb.cfg import logger, Const
 
         # Load data into memory from file
-        self.data = pd.read_csv(os.path.join(self.DATA_DIR, self.DATA_FILE), escapechar='#')
+        self.data = pd.read_csv(os.path.join(Const.DATA_DIR, Const.DATA_FILE), escapechar='#')
         self.headers = list(self.data.columns.values)
 
         # Get values for data selection
@@ -49,7 +45,7 @@ class Model:
         pd.set_option('display.max_rows', limit + 1)
 
         if wide:
-            pd.set_option('display.float_format', lambda x: format(x, self.FLOAT_FORMAT))
+            pd.set_option('display.float_format', lambda x: format(x, Const.FLOAT_FORMAT))
 
     def clear_filter_results(self):
         self.results = None
@@ -69,11 +65,11 @@ class Model:
         """Prep data for export"""
 
         # First, to save space, delete existing download file(s)
-        for filename in glob.glob(self.DOWNLOAD_DATA_NAME + '.*'):
+        for filename in glob.glob(Const.DOWNLOAD_DATA_NAME + '.*'):
             os.remove(filename)
 
         # Create new download file TODO Other download formats
-        filename = self.DOWNLOAD_DATA_NAME + '.' + file_format_ext
+        filename = Const.DOWNLOAD_DATA_NAME + '.' + file_format_ext
         data.to_csv(filename, index=False, quoting=csv.QUOTE_NONNUMERIC)
 
         return filename

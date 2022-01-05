@@ -12,9 +12,13 @@ class Controller():
     def start(self):
         """Make post __init__() preparations"""
 
-        # Create module-level globals
-        global model, view, logger
-        from nb.cfg import model, view, logger
+        # Create module-level singletons
+        global model, view, logger, Const
+        from nb.cfg import model, view, logger, Const
+
+        # Show data preview
+        with view.data_preview_out:
+            display(model.data)
 
         # Setup callbacks
         try:
@@ -40,7 +44,7 @@ class Controller():
 
                 with view.filter_out_export:
                     clear_output(wait=True)
-                    display(FileLink(filename, result_html_prefix=view.EXPORT_LINK_PROMPT))
+                    display(FileLink(filename, result_html_prefix=Const.EXPORT_LINK_PROMPT))
 
         except Exception:
             logger.debug('Exception during download creation...\n' + traceback.format_exc())
@@ -52,64 +56,70 @@ class Controller():
             view.filter_out_export.clear_output()
             model.clear_filter_results()  # New search attempt so reset
             model.filter_data(view.filter_txt_startyr.value, view.filter_txt_endyr.value)
+            self.refresh_filter_output()
         except Exception:
             logger.debug('Exception while filtering data...\n'+traceback.format_exc())
 
-        self.cb_refresh_filter_output()
-
     def cb_ndisp_changed(self, _):
-        self.cb_refresh_filter_output()
-
-    def cb_refresh_filter_output(self):
-        """Display filter results. Enable/disable plot widget(s)."""
-
-        if model.res_count > 0:
-
-            # Calc output line limit
-            if view.filter_ddn_ndisp.value == view.ALL:
-                limit = model.res_count
-            else:
-                limit = int(view.filter_ddn_ndisp.value)
-
-            # Display results
-            model.set_disp(limit=limit)
-            view.set_data_output(model.results.head(limit))
-
-            # Enable plot
-            view.plot_ddn.disabled = False
-            view.plot_ddn.options = [view.EMPTY]+model.headers[1:]
-        else:
-            view.set_data_output()  # Show "empty list" msg
-            view.plot_ddn.disabled = True
+        try:
+            self.refresh_filter_output()
+        except Exception:
+            logger.debug('Exception while changing number of out lines to display...\n'+traceback.format_exc())
 
     def cb_plot_type_selected(self, _):
-        TITLE = 'Land-Ocean Temperature Index'
+        try:
 
-        if not view.plot_ddn.value == view.EMPTY:
-            try:
+            if not view.plot_ddn.value == Const.EMPTY:
                 view.plot_output.clear_output(wait=True)
 
                 with view.plot_output:
                     plt.plot(model.results[model.headers[0]], model.results[view.plot_ddn.value])
                     plt.xlabel(model.headers[0])
                     plt.ylabel(view.plot_ddn.value)
-                    plt.suptitle(TITLE)
-                    plt.show()
-
-                    # Update output widget with new plot
+                    plt.suptitle(Const.PLOT_TITLE)
                     plt.show()
                     logger.debug('Plot finished')
-            except Exception:
-                plt.close()  # Clear any partial plot output
-                logger.debug('Plot: raising exception')
-                raise
+        except Exception:
+            logger.debug('Exception while plotting...')
+            raise
+        finally:
+            plt.close()
 
     def cb_apply_plot_settings(self, _):
-        jtplot.style(theme=view.theme.value,
-                     context=view.context.value,
-                     fscale=view.fscale.value,
-                     spines=view.spines.value,
-                     gridlines=view.gridlines.value,
-                     ticks=view.ticks.value,
-                     grid=view.grid.value,
-                     figsize=(view.figsize1.value, view.figsize2.value))
+        try:
+            jtplot.style(theme=view.theme.value,
+                         context=view.context.value,
+                         fscale=view.fscale.value,
+                         spines=view.spines.value,
+                         gridlines=view.gridlines.value,
+                         ticks=view.ticks.value,
+                         grid=view.grid.value,
+                         figsize=(view.figsize1.value, view.figsize2.value))
+        except Exception:
+            logger.debug('Exception while applying plot settings...')
+            raise
+
+    def refresh_filter_output(self):
+        """Display filter results. Enable/disable plot widget(s)."""
+
+        if model.res_count > 0:
+
+            # Calc set output line limit
+            if view.filter_ddn_ndisp.value == Const.ALL:
+                limit = model.res_count
+            else:
+                limit = int(view.filter_ddn_ndisp.value)
+
+            # Display results
+            model.set_disp(limit=limit)
+
+            with view.filter_output:
+                clear_output(wait=True)
+                display(model.results.head(limit))
+
+            # Enable plot
+            view.plot_ddn.disabled = False
+            view.plot_ddn.options = [Const.EMPTY]+model.headers[1:]
+        else:
+            view.set_no_data()  # Show "empty list" msg
+            view.plot_ddn.disabled = True
