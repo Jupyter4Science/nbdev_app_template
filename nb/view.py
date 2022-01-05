@@ -5,12 +5,12 @@ import ipywidgets as widgets
 import IPython
 import logging
 import urllib
-from matplotlib import pyplot as plt
-from IPython.display import display, FileLink
+from IPython.display import display, clear_output
+
+EMPTY_LIST_MSG = '''<br>(There's no data to display.)'''
 
 
 class View:
-    EMPTY_LIST_MSG = '''<br>(There's no data to display.)'''
     ALL = 'All'
     EMPTY = ''
     EXPORT_LINK_PROMPT = "Click here to save file: "
@@ -158,7 +158,7 @@ class View:
                                                 layout=self.LO20)
         self.filter_out_export = widgets.Output(layout={'border': '1px solid black'})
 
-        self.empty_list_msg()
+        self.set_data_output()  # Display empty list msg
 
         content = []
 
@@ -247,94 +247,12 @@ class View:
         return(self.section(SECTION_TITLE, [self.theme, self.context, self.fscale, self.spines, self.gridlines,
                                             self.ticks, self.grid, self.figsize1, self.figsize2, self.apply]))
 
-    def update_filtered_output(self):
-        """Display new data in filtered output"""
-
-        if model.res_count < 1:
-            self.output(self.EMPTY_LIST_MSG, self.filter_output)
-        else:
-            # Calc output line limit
-            if self.filter_ddn_ndisp.value == self.ALL:
-                limit = model.res_count
-            else:
-                limit = int(self.filter_ddn_ndisp.value)
-
-            model.set_disp(limit=limit)
-            self.output(model.results.head(limit), self.filter_output)
-
-    def set_plot_status(self):
-        """Change status of plot-related widgets based on availability of filter results"""
-        if model.res_count > 0:
-            self.plot_ddn.disabled = False
-            self.plot_ddn.options = [self.EMPTY]+model.headers[1:]
-        else:
-            self.plot_ddn.disabled = True
-
-    def output(self, content, widget):
-        """Reset output area with contents (text or data)"""
-        widget.clear_output(wait=True)
+    def set_data_output(self, content=EMPTY_LIST_MSG):
+        """Replace contents of filter output area with new text or data"""
 
         if isinstance(content, str):
             content = widgets.HTML(content)
 
-        with widget:
+        with self.filter_output:
+            clear_output(wait=True)
             display(content)
-
-    def empty_list_msg(self):
-        self.output(self.EMPTY_LIST_MSG, self.filter_output)
-
-    def plot(self):
-        TITLE = 'Land-Ocean Temperature Index'
-
-        if not self.plot_ddn.value == self.EMPTY:
-            try:
-                self.plot_output.clear_output(wait=True)
-
-                with self.plot_output:
-                    plt.plot(model.results[model.headers[0]], model.results[self.plot_ddn.value])
-                    plt.xlabel(model.headers[0])
-                    plt.ylabel(self.plot_ddn.value)
-                    plt.suptitle(TITLE)
-                    plt.show()
-
-                    # Update output widget with new plot
-                    plt.show()
-                    logger.debug('after plt.show()')
-            except Exception:
-                plt.close()  # Clear any partial plot output
-                logger.debug('raising exception')
-                raise
-
-    def export_link(self, filepath, output):
-        """Create data URI link and add it to export output area"""
-        output.clear_output()
-
-        link = FileLink(filepath, result_html_prefix=self.EXPORT_LINK_PROMPT)
-
-        with output:
-            display(link)
-
-    # NOTE Method below is currently unused. Remains for reference
-    def get_module_export_header(self):
-        '''Generate module output header for export'''
-        ret = []
-
-        for i in range(len(self.MODULE_HEADER[1])):
-            pre = self.MODULE_HEADER[0][i].strip()
-            title = self.MODULE_HEADER[1][i].strip()
-
-            if not pre == '':
-                title = pre + ' ' + title
-
-            ret.append(title)
-
-        return ret
-
-    # NOTE Method below is currently unused. Remains for reference
-    def output_data_link(_, output_widget, data_str):
-        '''Create data URI link to download data'''
-        pre = '<a download="loti.csv" target="_blank" href="data:text/csv;charset=utf-8,'
-        post = '">Download</a>'
-
-        with output_widget:
-            display(widgets.HTML(pre+urllib.parse.quote(data_str)+post))

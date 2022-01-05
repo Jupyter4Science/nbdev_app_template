@@ -27,7 +27,7 @@ The template was developed so researchers can quickly and easily put their proje
 
 Source code is organized in a loose [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is divided into three classes in the "nb" directory:
 
-- Model: Works with storage (file system, database, etc)
+- Model: Works with data and storage (file system, database, etc)
 - View:  Builds the user interface (widgets, plots, etc.)
 - Controller: Responds to user actions (button presses, menu selections, etc.)
 

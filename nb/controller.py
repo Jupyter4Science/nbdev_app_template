@@ -3,6 +3,8 @@
 
 import traceback
 from jupyterthemes import jtplot
+from matplotlib import pyplot as plt
+from IPython.display import display, clear_output, FileLink
 
 
 class Controller():
@@ -35,7 +37,11 @@ class Controller():
             # Create link for filter results
             if model.res_count > 0:
                 filename = model.create_download_file(model.results, 'csv')
-                view.export_link(filename, view.filter_out_export)
+
+                with view.filter_out_export:
+                    clear_output(wait=True)
+                    display(FileLink(filename, result_html_prefix=view.EXPORT_LINK_PROMPT))
+
         except Exception:
             logger.debug('Exception during download creation...\n' + traceback.format_exc())
             raise
@@ -55,17 +61,48 @@ class Controller():
         self.cb_refresh_filter_output()
 
     def cb_refresh_filter_output(self):
-        """Enable or disable controls based on filter results."""
-        if model.res_count > 0:
-            view.update_filtered_output()
-        else:
-            view.empty_list_msg()
-            # TODO Disable download
+        """Display filter results. Enable/disable plot widget(s)."""
 
-        view.set_plot_status()
+        if model.res_count > 0:
+
+            # Calc output line limit
+            if view.filter_ddn_ndisp.value == view.ALL:
+                limit = model.res_count
+            else:
+                limit = int(view.filter_ddn_ndisp.value)
+
+            # Display results
+            model.set_disp(limit=limit)
+            view.set_data_output(model.results.head(limit))
+
+            # Enable plot
+            view.plot_ddn.disabled = False
+            view.plot_ddn.options = [view.EMPTY]+model.headers[1:]
+        else:
+            view.set_data_output()  # Show "empty list" msg
+            view.plot_ddn.disabled = True
 
     def cb_plot_type_selected(self, _):
-        view.plot()
+        TITLE = 'Land-Ocean Temperature Index'
+
+        if not view.plot_ddn.value == view.EMPTY:
+            try:
+                view.plot_output.clear_output(wait=True)
+
+                with view.plot_output:
+                    plt.plot(model.results[model.headers[0]], model.results[view.plot_ddn.value])
+                    plt.xlabel(model.headers[0])
+                    plt.ylabel(view.plot_ddn.value)
+                    plt.suptitle(TITLE)
+                    plt.show()
+
+                    # Update output widget with new plot
+                    plt.show()
+                    logger.debug('Plot finished')
+            except Exception:
+                plt.close()  # Clear any partial plot output
+                logger.debug('Plot: raising exception')
+                raise
 
     def cb_apply_plot_settings(self, _):
         jtplot.style(theme=view.theme.value,
