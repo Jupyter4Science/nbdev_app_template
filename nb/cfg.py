@@ -1,4 +1,4 @@
-# cfg.py - Global variables for notebook
+# cfg.py - Constants and singletons for notebook
 # rcampbel@purdue.edu - 2022-01-05
 
 import logging
@@ -110,12 +110,12 @@ class NotebookLoggingHandler(logging.Handler):
             print(self.format(message))
 
 
+# Singletons
 logger = logging.getLogger(__name__)
 log_handler = NotebookLoggingHandler(logging.INFO)
 logger.addHandler(log_handler)
 logger.addFilter(AppendFileLineToLog())
 logger.setLevel(logging.INFO)
-
 model = Model()
 view = View()
 ctrl = Controller()

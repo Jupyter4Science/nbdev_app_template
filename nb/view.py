@@ -2,9 +2,8 @@
 # rcampbel@purdue.edu - 2020-07-14
 
 import ipywidgets as widgets
-import IPython
+from IPython.display import HTML, display, clear_output
 import logging
-from IPython.display import display, clear_output
 
 
 class View:
@@ -13,37 +12,39 @@ class View:
     LO20 = widgets.Layout(width='20%')
 
     def __init__(self):
+        # The view's "public" attributes are listed here, with type hints, for quick reference
+
         # Filer ("Selection" tab) controls
-        self.filter_txt_startyr = None
-        self.filter_txt_endyr = None
-        self.filter_btn_apply = None
-        self.filter_ddn_ndisp = None
-        self.filter_output = None
-        self.filter_btn_refexp = None
-        self.filter_out_export = None
+        self.filter_txt_startyr: widgets.Text
+        self.filter_txt_endyr: widgets.Text
+        self.filter_btn_apply: widgets.Button
+        self.filter_ddn_ndisp: widgets.Dropdown
+        self.filter_output: widgets.Output = None  # "None" delays output unitl widget is created
+        self.filter_btn_refexp: widgets.Button
+        self.filter_out_export: widgets.Output
 
         # Plot ("Visualize" tab) controls
-        self.plot_ddn = None
-        self.plot_output = None
+        self.plot_ddn: widgets.Dropdown
+        self.plot_output: widgets.Output
 
         # Settings controls
-        self.theme = None
-        self.context = None
-        self.fscale = None
-        self.spines = None
-        self.gridlines = None
-        self.ticks = None
-        self.grid = None
-        self.figsize1 = None
-        self.figsize2 = None
-        self.apply = None
+        self.theme: widgets.Dropdown
+        self.context: widgets.Dropdown
+        self.fscale: widgets.FloatSlider
+        self.spines: widgets.Checkbox
+        self.gridlines: widgets.Text
+        self.ticks: widgets.Checkbox
+        self.grid: widgets.Checkbox
+        self.figsize1: widgets.FloatSlider
+        self.figsize2: widgets.FloatSlider
+        self.apply: widgets.Button
 
     def start(self, log=False):
-        """Make post __init__() preparations"""
+        """Build the user interface"""
 
         # Create module-level singletons
-        global model, logger, Const
-        from nb.cfg import model, logger, log_handler, Const
+        global logger, Const
+        from nb.cfg import logger, log_handler, Const
 
         # Optionally show additional info in log
         if log:
@@ -66,16 +67,14 @@ class View:
         tab_content.append(self.visualize_content())
         tab_content.append(self.settings_content())
 
-        # Fill tabs with content
-        tabs.children = tuple(tab_content)
+        tabs.children = tuple(tab_content)  # Fill tabs with content
 
         # Output header and tabs
-        display(IPython.display.HTML(filename='nb/header.html'))  # styles, title, js
+        display(HTML(filename='nb/header.html'))  # styles, title, js
         display(tabs)
         logger.info('UI build completed')
 
-        # Optionally show a widget containing log items
-        if log:
+        if log:  # Optionally show a widget containing log items
             display(log_handler.log_output_widget)
 
     def section(self, title, contents):
@@ -93,7 +92,6 @@ class View:
         content = []
         content.append(self.section(Const.USING_TITLE, Const.USING_TEXT))
         content.append(self.section(Const.SOURCES_TITLE, Const.SOURCES_TEXT))
-
         return widgets.VBox(content)
 
     def data_content(self):
@@ -103,8 +101,6 @@ class View:
 
     def selection_content(self):
         '''Create widgets for selection tab content'''
-
-        # Create widgets
         self.filter_txt_startyr = widgets.Text(description=Const.START_YEAR, value='', placeholder='')
         self.filter_txt_endyr = widgets.Text(description=Const.END_YEAR, value='', placeholder='')
         self.filter_btn_apply = widgets.Button(description=Const.CRITERIA_APPLY, icon='filter',
@@ -114,13 +110,9 @@ class View:
         self.filter_btn_refexp = widgets.Button(description=Const.EXPORT_BUTTON, icon='download',
                                                 layout=self.LO20)
         self.filter_out_export = widgets.Output(layout={'border': '1px solid black'})
-
-        self.set_no_data()  # Display empty list msg
-
         content = []
 
         # Section: Selection criteria
-
         section_list = []
         section_list.append(self.filter_txt_startyr)
         section_list.append(self.filter_txt_endyr)
@@ -128,21 +120,16 @@ class View:
         content.append(self.section(Const.CRITERIA_TITLE, section_list))
 
         # Section: Output (with apply button)
-
         section_list = []
-
         row = []
         row.append(widgets.HTML('<div style="text-align: right;">'+Const.OUTPUT_PRE+'</div>', layout=self.LO15))
         row.append(self.filter_ddn_ndisp)
         row.append(widgets.HTML('<div style="text-align: left;">' + Const.OUTPUT_POST + '</div>', layout=self.LO10))
         section_list.append(widgets.HBox(row))
-
         section_list.append(widgets.HBox([self.filter_output]))  # NOTE Use "layout={'width': '90vw'}" to widen
-
         content.append(self.section(Const.OUTPUT_TITLE, section_list))
 
         # Section: Export (download)
-
         section_list = []
         section_list.append(widgets.VBox([self.filter_btn_refexp, self.filter_out_export]))
         content.append(self.section(Const.EXPORT_TITLE, section_list))
@@ -153,17 +140,14 @@ class View:
         '''Create widgets for visualizea tab content'''
         content = []
         content.append(self.section(Const.NOTE_TITLE, Const.NOTE_TEXT))
-
         self.plot_ddn = widgets.Dropdown(options=[Const.EMPTY], value=None, disabled=True)
         self.plot_output = widgets.Output()
-
         section_list = []
 
         row = []
         row.append(widgets.HTML(value=Const.PLOT_LABEL))
         row.append(widgets.Label(value='', layout=widgets.Layout(width='60%')))  # Cheat: spacer
         section_list.append(widgets.HBox(row))
-
         section_list.append(self.plot_ddn)
         section_list.append(self.plot_output)
         content.append(self.section(Const.PLOT_TITLE, section_list))
@@ -187,7 +171,7 @@ class View:
                              self.ticks, self.grid, self.figsize1, self.figsize2, self.apply]))
 
     def set_no_data(self):
-        """Replace contents of filter output area with new text or data"""
+
         with self.filter_output:
             clear_output(wait=True)
             display(widgets.HTML(Const.NO_DATA_MSG))

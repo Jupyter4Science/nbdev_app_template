@@ -10,18 +10,18 @@ import pandas as pd
 class Model:
 
     def __init__(self):
-        self.data = None
-        self.results = None
-        self.res_count = 0
-        self.res_csv = None
-        self.headers = ''
-        self.query = ''
-        self.ymin = []
-        self.ymax = []
+        # The models's "public" attributes are listed here, with type hints, for quick reference
+        self.data: pd.DataFrame
+        self.results: pd.DataFrame
+        self.res_count: int = 0
+        self.headers: list
+        self.ymin: int
+        self.ymax: int
+
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
     def start(self):
-        """Make post __init__() preparations"""
+        """Read data and/or prepare to query data"""
 
         # Create module-level singletons
         global logger, Const
@@ -31,7 +31,7 @@ class Model:
         self.data = pd.read_csv(os.path.join(Const.DATA_DIR, Const.DATA_FILE), escapechar='#')
         self.headers = list(self.data.columns.values)
 
-        # Get values for data selection
+        # Get values for data selection  TODO ennforce data selection limits
         self.ymin = min(self.data[self.data.columns[0]])
         self.ymax = max(self.data[self.data.columns[0]])
 

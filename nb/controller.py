@@ -2,15 +2,15 @@
 # rcampbel@purdue.edu - 2020-07-14
 
 import traceback
+from IPython.display import display, clear_output, FileLink
 from jupyterthemes import jtplot
 from matplotlib import pyplot as plt
-from IPython.display import display, clear_output, FileLink
 
 
 class Controller():
 
     def start(self):
-        """Make post __init__() preparations"""
+        """Begin running the app"""
 
         # Create module-level singletons
         global model, view, logger, Const
@@ -19,6 +19,8 @@ class Controller():
         # Show data preview
         with view.data_preview_out:
             display(model.data)
+
+        #view.set_no_data()  # Show "empty list" msg
 
         # Setup callbacks
         try:
