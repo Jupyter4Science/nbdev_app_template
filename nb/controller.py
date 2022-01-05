@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 class Controller():
 
     def start(self):
-        """Begin running the app"""
+        """Begin running the app."""
 
         # Create module-level singletons
         global model, view, logger, Const
@@ -36,7 +36,7 @@ class Controller():
             raise
 
     def cb_fill_results_export(self, _):
-        """User hit button to download results"""
+        """React to user pressing button to download results."""
         try:
             # Create link for filter results
             if model.res_count > 0:
@@ -51,7 +51,7 @@ class Controller():
             raise
 
     def cb_apply_filter(self, _):
-        '''React to apply filter button press'''
+        """React to apply filter button press."""
         try:
             view.filter_out_export.clear_output()
             model.clear_filter_results()  # New search attempt so reset
@@ -61,12 +61,14 @@ class Controller():
             logger.debug('Exception while filtering data...\n'+traceback.format_exc())
 
     def cb_ndisp_changed(self, _):
+        """React to user changing result page size."""
         try:
             self.refresh_filter_output()
         except Exception:
             logger.debug('Exception while changing number of out lines to display...\n'+traceback.format_exc())
 
     def cb_plot_type_selected(self, _):
+        """React to use requesting plot."""
         try:
 
             if not view.plot_ddn.value == Const.EMPTY:
@@ -86,6 +88,7 @@ class Controller():
             plt.close()
 
     def cb_apply_plot_settings(self, _):
+        """React to user applying settings"""
         try:
             jtplot.style(theme=view.theme.value,
                          context=view.context.value,
@@ -111,6 +114,7 @@ class Controller():
                 limit = int(view.filter_ddn_ndisp.value)
 
             # Display results
+
             model.set_disp(limit=limit)
 
             with view.filter_output:

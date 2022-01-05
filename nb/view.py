@@ -40,7 +40,7 @@ class View:
         self.apply: widgets.Button
 
     def start(self, log=False):
-        """Build the user interface"""
+        """Build the user interface."""
 
         # Create module-level singletons
         global logger, Const
@@ -137,7 +137,7 @@ class View:
         return widgets.VBox(content)
 
     def visualize_content(self):
-        '''Create widgets for visualizea tab content'''
+        '''Create widgets for visualize tab content'''
         content = []
         content.append(self.section(Const.NOTE_TITLE, Const.NOTE_TEXT))
         self.plot_ddn = widgets.Dropdown(options=[Const.EMPTY], value=None, disabled=True)
@@ -155,6 +155,7 @@ class View:
         return widgets.VBox(content)
 
     def settings_content(self):
+        """Create widgets for settings tab."""
         self.theme = widgets.Dropdown(description=Const.THEME, options=Const.THEMES)
         self.context = widgets.Dropdown(description=Const.CONTEXT, options=Const.CONTEXTS)
         self.fscale = widgets.FloatSlider(description=Const.FONT_SCALE, value=1.4)

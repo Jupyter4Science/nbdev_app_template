@@ -21,7 +21,7 @@ class Model:
         pd.set_option('display.width', 1000)  # Prevent data desc line breaking
 
     def start(self):
-        """Read data and/or prepare to query data"""
+        """Read data and/or prepare to query data."""
 
         # Create module-level singletons
         global logger, Const
@@ -38,7 +38,7 @@ class Model:
         logger.info('Data load completed')
 
     def set_disp(self, data=None, limit=None, wide=False):
-        """Prep Pandas to display specific number of data lines"""
+        """Prep Pandas to display specific number of data lines."""
         if not limit:
             limit = data.shape[0]
 
@@ -48,21 +48,23 @@ class Model:
             pd.set_option('display.float_format', lambda x: format(x, Const.FLOAT_FORMAT))
 
     def clear_filter_results(self):
+        """Reset results-tracking attributes."""
         self.results = None
         self.res_count = 0
 
     def filter_data(self, from_year, to_year):
-        '''Use provided values to filter data'''
+        '''Use provided values to filter data.'''
         self.results = self.data[(self.data[self.headers[0]] >= int(from_year)) &
                                  (self.data[self.headers[0]] <= int(to_year))]
         self.res_count = self.results.shape[0]
         logger.debug('Results: '+str(self.res_count))
 
     def iterate_data(self):
+        """Get iterator for data."""
         return self.data.itertuples()
 
     def create_download_file(self, data, file_format_ext):
-        """Prep data for export"""
+        """Prep data for export."""
 
         # First, to save space, delete existing download file(s)
         for filename in glob.glob(Const.DOWNLOAD_DATA_NAME + '.*'):
