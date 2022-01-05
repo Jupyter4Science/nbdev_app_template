@@ -1,5 +1,8 @@
 <!-- header.html: Notebook-specific CSS, JS, title -->
+
 <style>
+    /* NOTE Put custom CSS here to change appearance of app */
+
     :root {
         /* Theme colors, darkest (...0) to lightest (...3 */
         --jp-brand-color0: #555960 !important;
@@ -7,7 +10,7 @@
         --jp-brand-color2: #9D9795 !important;
         --jp-brand-color3: #C4BFC0 !important;
     }
-    /* Title sytle: big, with theme colored font */
+    /* Title sytle: big, with theme-colored font */
     .this_nb_title {
         font-weight: bold;
         color: var(--jp-brand-color0);
@@ -21,14 +24,14 @@
         vertical-align: middle;
         max-height: 32px;
     }
-    /* Tab sytle: thick tab, them colored text */
+    /* Tab sytle: thick tab, theme-colored text */
     .p-TabBar-tabLabel {
         font-weight: bold !important;
         color: var(--jp-brand-color0) !important;
         margin-top: 1em !important;
         margin-bottom: 1em !important;
     }
-    /* Section header style: white on then color */
+    /* Section header style: white on theme color */
     .p-Collapse-header {
         color: white !important;
         background-color: var(--jp-brand-color2) !important;
@@ -37,7 +40,10 @@
         font-weight: normal !important;
     }
 </style>
+
 <script>
+    /* NOTE Put custom JavaScript here to change behavior of app in browser */
+
     // Hide jupyter icon and header when in appmode
     if (document.getElementById('appmode-leave')) {
         var h = document.getElementById('header');
@@ -51,6 +57,9 @@
         }
     }
 </script>
+
+<!-- NOTE Put custom HTML here to change content that appears above notebook -->
+
 <!-- Title and logo -->
 <span class="this_nb_title">Land-Ocean Temperature Index</span>
 <img class=this_nb_logo src="nb/logo.png" alt="Purdue IT Research Computing">
