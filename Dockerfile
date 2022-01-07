@@ -5,4 +5,4 @@ RUN conda install -c conda-forge voila jupyterthemes \
 WORKDIR /home/jovyan/target
 # CMD ["bash"]
 # CMD ["jupyter-notebook","--port=8866"]
-CMD ["voila","notebook.ipynb","--no-browser","--VoilaConfiguration.file_whitelist=nb/logo.png","--Voila.ip","0.0.0.0"]
+CMD ["voila","notebook.ipynb","--no-browser","--Voila.ip","0.0.0.0"]
