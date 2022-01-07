@@ -24,6 +24,9 @@ class Const:
     FLOAT_FORMAT = '0,.4f'
 
     # General
+    APP_TITLE = 'Land-Ocean Temperature Index'
+    CSS_JS_HTML = 'nb/custom.html'
+    LOGO_IMAGE = 'nb/logo.png'
     ALL = 'All'
     EMPTY = ''
     NO_DATA_MSG = '''<br>(There's no data to display.)'''

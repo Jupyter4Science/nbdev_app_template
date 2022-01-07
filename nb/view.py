@@ -53,11 +53,24 @@ class View:
 
         # Create user interface
 
+        # Send app's custom styles (CSS code) down to the browser
+        display(HTML(filename=Const.CSS_JS_HTML))
+
+        # Create large title for app
+        app_title = widgets.HTML(Const.APP_TITLE)
+        app_title.add_class('app_title')  # Example of custom widget style via CSS, see custom.html
+
+        # Create app logo - example of using exposed layout properties
+        with open(Const.LOGO_IMAGE, "rb") as logo_file:
+            logo = widgets.Image(value=logo_file.read(), format='png', layout={'max_height': '32px'})
+
+        # Create tabs and fill with UI content (widgets)
+
         tabs = widgets.Tab()
 
-        # Set title for each tab
-        for i, title in enumerate(Const.TAB_TITLES):
-            tabs.set_title(i, title)
+        # Add title text for each tab
+        for i, tab_title in enumerate(Const.TAB_TITLES):
+            tabs.set_title(i, tab_title)
 
         # Build conent (widgets) for each tab
         tab_content = []
@@ -69,12 +82,16 @@ class View:
 
         tabs.children = tuple(tab_content)  # Fill tabs with content
 
-        # Output header and tabs
-        display(HTML(filename='nb/header.html'))  # styles, title, js
-        display(tabs)
+        # Show the app
+        header = widgets.HBox([app_title, logo])
+        header.layout.justify_content = 'space-between'  # Example of custom widget layout
+        display(widgets.VBox([header, tabs]))
         logger.info('UI build completed')
 
-        if log:  # Optionally show a widget containing log items
+        # Optionally, display a widget that shows the log items
+        # Log items always appear in Jupyter Lab's log.
+        # However, this addl. log widget is useful in some contexts (e.g. HUBzero tools)
+        if log:
             display(log_handler.log_output_widget)
 
     def section(self, title, contents):
