@@ -9,6 +9,5 @@ dependencies:
   - jupyterthemes
   - matplotlib
   - pandas
-  - pycodestyle
   - python=3.8
   - voila
