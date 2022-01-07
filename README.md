@@ -54,6 +54,8 @@ This project requires Python, Jupyter, and a number of Python packages. One opti
 
 ### Debugging
 
+Run the notebook in Jupyter Lab by opening the "Run" menu and selecting "Restart Kernel and Run All Cells..". Then press the the "Restart" button that appears. This will allow you to view any exceptions and errors.
+
 For simple bugs, use the log and [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques) (`logger.debug(...)`) to display values of variables. The log can viewed in Jupyter Lab's "Log Console" (menu: View --> Show Log Console). Specify  `log=True` when calling the view's `start()` method.
 
 For more difficult bugs, use Jupyter Lab's [debugger](https://jupyterlab.readthedocs.io/en/stable/user/debugger.html). Set a breakpoint in a line of code in the notebook (after the import). Using the debugger, run to that breakpoing. Then, trace down into the model, view, or controller code and set more breakpoints as needed.
