@@ -39,34 +39,24 @@ For example, the view object creates a button named "filter_btn_apply". The cont
 ## Develop and Test
 
 ### Install dependecies on your workstation
-This project requires Python, Jupyter, and a number of Python packages. One options is to can manually install the packages listed under "dependencies" in `environment.yml`. Another option is to use the Andaconda package management system to create an isolated environment. This prevents package installations from affecting your other projects.
+This project requires Python, Jupyter, and a number of Python packages. One options is to manually install the packages listed under "dependencies" in `environment.yml`. Simply use your OS's package manager and/or the `pip` command. Another option is to use the Andaconda package management system to create an isolated environment. This prevents package installations from affecting your other projects.
 
 ### (optional but encouraged): Use Conda
 1. Install [Anaconda](https://www.anaconda.com/products/individual) on your workstation.
 1. At the OS command line, run: `conda env create --file environment.yml`. This creates a conda environment called "nbtmpl" and installs packages into it. Answer "y" to prompts.
 
-### Start Jupyter and run the notebook
+### Start Jupyter and Run the Notebook
 1. Start a command line (terminal) session.
 1. If using conda, enter `conda activate nbtmpl`
-1. Enter `jupyter lab`. (See [Starting JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html) for more info.
-1. Browse to the nbtmpl directory and double click on the `notebook.ipynb` file.
-1. Click the "Restart kernel...re-run...notebook" button (double trinangle icon).
-1. When prompted, click the "Restart" button.
-1. NOTE: Later, when the notebook and code runs as a web app, only the title, tabs, and tab content will appear. The Jupyter Lab UI and the notebook's code cell will not appear.
+1. Enter `jupyter-lab`. (See [Starting JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html) for more info.
+1. Browse to the "nbtmpl" directory and double click on the `notebook.ipynb` file.
+1. In the "View" menu, select "Open with Voila in New Browser Tab".
 
 ### Debugging
 
 For simple bugs, use the log and [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques) (`logger.debug(...)`) to display values of variables. The log can viewed in Jupyter Lab's "Log Console" (menu: View --> Show Log Console). Specify  `log=True` when calling the view's `start()` method.
 
 For more difficult bugs, use Jupyter Lab's [debugger](https://jupyterlab.readthedocs.io/en/stable/user/debugger.html). Set a breakpoint in a line of code in the notebook (after the import). Using the debugger, run to that breakpoing. Then, trace down into the model, view, or controller code and set more breakpoints as needed.
-
-## (optional) Demonstrate the App
-
-1. At a command line, change the current director to the one that contains "notebook.ipynb" (usually "nbtmpl").
-1. If using conda, enter `conda activate nbtmpl`
-1. Enter `jupyter-notebook &`
-1. Click on the "notebook.ipynb" file.
-1. Click on the "Voila" button.
 
 ## "Access denied" Error
 
