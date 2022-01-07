@@ -66,7 +66,7 @@ For more difficult bugs, use Jupyter Lab's [debugger](https://jupyterlab.readthe
 1. If using conda, enter `conda activate nbtmpl`
 1. Enter `jupyter-notebook &`
 1. Click on the "notebook.ipynb" file.
-1. Click on the "AppMode" button.
+1. Click on the "Voila" button.
 
 ## "Access denied" Error
 

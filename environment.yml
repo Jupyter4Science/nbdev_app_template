@@ -11,3 +11,4 @@ dependencies:
   - pandas
   - pycodestyle
   - python=3.8
+  - voila
