@@ -1,7 +1,8 @@
-name: nbtmpl
+name: nbdev-application
 channels:
   - conda-forge
   - defaults
+  - fastai
 dependencies:
   - ipykernel
   - ipywidgets
@@ -11,3 +12,6 @@ dependencies:
   - pandas
   - python=3.8
   - voila
+  - jupyter
+  - notebook
+  - nbdev
