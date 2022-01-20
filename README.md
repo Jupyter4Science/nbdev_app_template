@@ -1,12 +1,14 @@
-# nbtmpl - Notebook-based App Template
-A Python code example for building web apps without writing HTML, CSS. and JavaScript.
+# nbdev_app_template - Notebook-based App Template
+
+> A Python code example for building web apps without writing HTML, CSS. and JavaScript.
 
 <table><tr><td width="14%">
     <img src="https://www.python.org/static/img/python-logo.png" alt="python logo">
     </td><td width="14%">
-    <img src="https://pandas.pydata.org/static/img/pandas_white.svg" alt="pandas logo">
+    <img src="https://altair-viz.github.io/_static/altair-logo-light.png" alt="altair viz logo
+">
     </td><td width="14%">
-    <img src="https://matplotlib.org/_static/images/logo2.svg" alt="matplotlib logo">
+    <img src="https://nbdev.fast.ai/assets/images/company_logo.png" alt="fast ai logo">
     </td><td width="14%">
     <b>ipywidgets</b>
     </td><td width="14%">
@@ -23,23 +25,39 @@ This repository contains easy-to-modify [Python](https://www.python.org/) code. 
 
 The template was developed so researchers can quickly and easily put their project on the web without getting bogged down in conventional web developement (AJAX, HTML, CSS, JS, etc.). The example notebook uses global temperature data from NASA to show how users can view, search, download, and plot data using an interactive, web enabled tool.
 
-## How It Works
-Source code is organized in a loose [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern. The code is divided into three classes in the "nb" directory:
+
+## Opinionated Development Environment
+
+nbdev is a library originally intended to allow developers to develop python libraries from Jupyter Notebooks. The advantage of this approach is that the resulting programming environment is truely literate: all code, tests, and documentation are produced from a narrative-style composition.
+
+Development in Notebooks is often eshewed by "serious programmers", especially to those that have a prefered IDE or development environment that has useful features such as grammar check, auto-complete, navigating by definitions, or searching code. This is a fair point, though as we will see, many of these features can be reclaimed through the use of extensions.
+
+Weighing benefits and drawbacks of the use of notebooks to develop a simple library is not in the scope of this template. However, the development of a user interface in Jupyter built with ipywidgets is more cumbersome.
+with interactive callback functions is far more cumbersome. Though the creators of nbdev may not have intended it, this library is alo excellent for developing interactive applications build with [ipywidgets](). Because interactive widgets make heavy use of callback functions, the use of debuggers is difficult. Additionally, the notebook kernel must be restarted to propogate changes made to the codebase. We claim that nbdev is best suited to ameliorate the following tiresome development procedure:
+
+1. Change a single line of code in a python script
+2. Restart rerun the application notebook
+3. Click through the application to debug and test your changes
+
+This procedure is obviated by the use of nbdev, which allows the developer to develop, interact with, and test a subset of widgets as a single component that can be later integrated into the broader application. 
+
+##  How It Works
+
+The source code makes uses of a variant of a [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) design pattern. 
 
 - Model: Works with data and storage (file system, database, etc)
 - View:  Builds the user interface (widgets, plots, etc.)
 - Controller: Responds to user actions (button presses, menu selections, etc.)
 
-The Jupyter notebook ('notebook.ipynb") contains just one code cell. This kicks off the MVC code and the web app starts running.
+The Jupyter notebook ('notebook.ipynb") contains just one code cell. This kicks off the controller and the web app starts running.
 
 The code relies on [widgets](https://en.wikipedia.org/wiki/Graphical_widget) and [callbacks](https://en.wikipedia.org/wiki/Callback_(computer_programming)) methods. Once it's up and running, the code waits for the user to make changes to user interface widgets. But widget updates also work in both directions. When the user interacts with a widget in their browser, an assigned callback method runs. And when some code changes a widget, those changes appear in the browser.
 
-For example, the view object creates a button named "filter_btn_apply". The controller specifies that, when this button is pressed, its "cb_apply_filter()" method should be called ("view.filter_btn_apply.on_click(self.cb_apply_filter)"). The "cb_apply_filter()" method then directs the model to perform the query and then updates the view's output widget, "view.filter_output".
 
 ## Develop and Test
 
 ### Install dependecies on your workstation
-This project requires Python, Jupyter, and a number of Python packages. One options is to manually install the packages listed under "dependencies" in `environment.yml`. Simply use your OS's package manager and/or the `pip` command. Another option is to use the Andaconda package management system to create an isolated environment. This prevents package installations from affecting your other projects.
+This project requires Python, Jupyter, nbdev and a number of Python packages. One options is to manually install the packages listed under "dependencies" in `environment.yml`. Simply use your OS's package manager and/or the `pip` command. Another option is to use the Andaconda package management system to create an isolated environment. This prevents package installations from affecting your other projects.
 
 ### (optional but encouraged): Use Conda
 1. Install [Anaconda](https://www.anaconda.com/products/individual) on your workstation.
@@ -52,13 +70,6 @@ This project requires Python, Jupyter, and a number of Python packages. One opti
 1. Browse to the "nbtmpl" directory and double click on the `notebook.ipynb` file.
 1. In the "View" menu, select "Open with Voila in New Browser Tab".
 
-### Debugging
-
-Run the notebook in Jupyter Lab by opening the "Run" menu and selecting "Restart Kernel and Run All Cells..". Then press the the "Restart" button that appears. This will allow you to view any exceptions and errors.
-
-For simple bugs, use the log and [print debugging](https://en.wikipedia.org/wiki/Debugging#Techniques) (`logger.debug(...)`) to display values of variables. The log can viewed in Jupyter Lab's "Log Console" (menu: View --> Show Log Console). Specify  `log=True` when calling the view's `start()` method.
-
-For more difficult bugs, use Jupyter Lab's [debugger](https://jupyterlab.readthedocs.io/en/stable/user/debugger.html). Set a breakpoint in a line of code in the notebook (after the import). Using the debugger, run to that breakpoing. Then, trace down into the model, view, or controller code and set more breakpoints as needed.
 
 ## "Access denied" Error
 
@@ -104,3 +115,7 @@ An alternate Dockerfile is provided to facilitate development iterations (write 
 1. Run the devimage: `docker run -p 8866:8866 --mount type=bind,src=/home/rcampbel/repos/nbtmpl,target=/home/jovyan/external nbtmpl_dev1`
 
 NOTE: Change "`/home/rcampbel/repos/nbtmpl`" to the full path to your local repo.
+
+## Attributions
+
+This template is adapted from [@rcpurdue](https://github.com/rcpurdue)'s Notebook Application Template ([nbtmpl](https://github.com/rcpurdue/nbtmpl)).
