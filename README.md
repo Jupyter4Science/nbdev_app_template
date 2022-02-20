@@ -1,4 +1,4 @@
-# nbdev_app_template - Notebook-based App Template
+# nbdev_app_template - An Opinionated Standalone Scientific Web Application Template
 
 > A Python code example for building web apps without writing HTML, CSS. and JavaScript.
 
@@ -21,61 +21,37 @@
 
 Got a Python project or Jupyter notebook? Want to turn it into a web applilcation?
 
-This repository contains easy-to-modify [Python](https://www.python.org/) code. It demonstrates using [ipywidgets](https://ipywidgets.readthedocs.io/en/stable/) to build an interactive web application. It relies on [Jupyter](https://jupyter.org/) notebook infrasturcture. However, the app looks like a web app, not a notebook. Further, it demonstrates the use of [Docker](https://www.docker.com/) and [Voilà](https://github.com/voila-dashboards/voila) to allow the app to be hosted on composable infrastructure. The example code uses [pandas](https://pandas.pydata.org/) for data access and [Matplotlib](https://matplotlib.org/) to generate plots.
-
-The template was developed so researchers can quickly and easily put their project on the web without getting bogged down in conventional web developement (AJAX, HTML, CSS, JS, etc.). The example notebook uses global temperature data from NASA to show how users can view, search, download, and plot data using an interactive, web enabled tool.
-
+This repository contains easy-to-modify [Python](https://www.python.org/) code. It demonstrates using [ipywidgets](https://ipywidgets.readthedocs.io/en/stable/) to build an interactive web application. It relies on [Jupyter](https://jupyter.org/) notebook infrasturcture. However, the app looks like a web app, not a notebook. Further, it demonstrates the use of [Docker](https://www.docker.com/) and [Voilà](https://github.com/voila-dashboards/voila) to allow the app to be hosted on composable infrastructure. This repository contains many templates that can be used to compose a web application with very little modification or experience with traditional web development (HTML, CSS, JS, etc.).
 
 ## Opinionated Development Environment
 
-nbdev is a library originally intended to allow developers to develop python libraries from Jupyter Notebooks. The advantage of this approach is that the resulting programming environment is truely literate: all code, tests, and documentation are produced from a narrative-style composition.
-
-Development in Notebooks is often eshewed by "serious programmers", especially to those that have a prefered IDE or development environment that has useful features such as grammar check, auto-complete, navigating by definitions, or searching code. This is a fair point, though as we will see, many of these features can be reclaimed through the use of extensions.
-
-Weighing benefits and drawbacks of the use of notebooks to develop a simple library is not in the scope of this template. However, the development of a user interface in Jupyter built with ipywidgets is more cumbersome.
-with interactive callback functions is far more cumbersome. Though the creators of nbdev may not have intended it, this library is alo excellent for developing interactive applications build with [ipywidgets](). Because interactive widgets make heavy use of callback functions, the use of debuggers is difficult. Additionally, the notebook kernel must be restarted to propogate changes made to the codebase. We claim that nbdev is best suited to ameliorate the following tiresome development procedure:
+Most applications we have developed require more code than can reasonably fit into a single notebook. Traditional development of an ipywidgets user interface with Python files can be cumbersome.  Because interactive widgets make heavy use of callback functions, the use of debuggers is difficult. Additionally, the notebook kernel must be restarted to propogate changes made to the codebase. We claim that nbdev is best suited to ameliorate the following tiresome development procedure:
 
 1. Change a single line of code in a python script
 2. Restart rerun the application notebook
 3. Click through the application to debug and test your changes
 
-This procedure is obviated by the use of nbdev, which allows the developer to develop, interact with, and test a subset of widgets as a single component that can be later integrated into the broader application. 
+This procedure is obviated by the use of nbdev, a library originally intended to allow developers to develop python libraries from Jupyter Notebooks. One advantage of this approach is that the resulting programming environment is truely literate: all code, tests, and documentation are produced from a narrative-style composition. Though the creators of nbdev may not have intended it, this library is alo excellent for developing interactive applications build with ipywidgets. This library allows the developer to develop, interact with, and test a subset of widgets as a single "Component" that can be later integrated into the broader application. 
 
-##  How It Works
+Development in Notebooks is often eshewed by "serious programmers", especially to those that have a prefered IDE or development environment that has useful features such as grammar check, auto-complete, navigating by definitions, or searching code. This may be a fair point, though as we will see, most of these features can be reclaimed through the use of JupyterLab extensions.
 
-The source code makes uses of a variant of a [Model-view-controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) design pattern. 
+## Getting Started
 
-- Model: Works with data and storage (file system, database, etc)
-- View:  Builds the user interface (widgets, plots, etc.)
-- Controller: Responds to user actions (button presses, menu selections, etc.)
+### Development Environment
 
-The Jupyter notebook ('notebook.ipynb") contains just one code cell. This kicks off the controller and the web app starts running.
+Using this template requires that you have either anaconda or miniconda installed on your development machine.
 
-The code relies on [widgets](https://en.wikipedia.org/wiki/Graphical_widget) and [callbacks](https://en.wikipedia.org/wiki/Callback_(computer_programming)) methods. Once it's up and running, the code waits for the user to make changes to user interface widgets. But widget updates also work in both directions. When the user interacts with a widget in their browser, an assigned callback method runs. And when some code changes a widget, those changes appear in the browser.
+1. Install anaconda or miniconda if it is not already on your development machine.
+2. Run `conda env create -f environment.yml` in your favorite terminal emulator to create a conda environment for development.
+3. Run `conda activate nbdev-app-template` to activate the environment.
+4. Run `jupyter lab` to launch an instance of JupyterLab.
+5. Use the file navegator to open the `tutorial/01_overview.ipynb` file to start the tutorial.
 
+### "Access denied" Error
 
-## Develop and Test
+A browser window should appear when you run `jupyter lab` or `jupyter notebook`. However, if the displayed page indicates access was denied, close the browser window and start another using one of the other URLs listed in the jupyter-lab/notebook output. Us a URL starting with "http://localhost...".
 
-### Install dependecies on your workstation
-This project requires Python, Jupyter, nbdev and a number of Python packages. One options is to manually install the packages listed under "dependencies" in `environment.yml`. Simply use your OS's package manager and/or the `pip` command. Another option is to use the Andaconda package management system to create an isolated environment. This prevents package installations from affecting your other projects.
-
-### (optional but encouraged): Use Conda
-1. Install [Anaconda](https://www.anaconda.com/products/individual) on your workstation.
-1. At the OS command line, run: `conda env create --file environment.yml`. This creates a conda environment called "nbtmpl" and installs packages into it. Answer "y" to prompts.
-
-### Start Jupyter and Run the Notebook
-1. Start a command line (terminal) session.
-1. If using conda, enter `conda activate nbtmpl`
-1. Enter `jupyter-lab`. (See [Starting JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/starting.html) for more info.
-1. Browse to the "nbtmpl" directory and double click on the `notebook.ipynb` file.
-1. In the "View" menu, select "Open with Voila in New Browser Tab".
-
-
-## "Access denied" Error
-
-A browser window should appear when you run "jupyter-lab" or "jupyter-notebook". However, if the displayed page indicates access was denied, close the browser window and start another using one of the other URLs listed in the jupyter-lab/notebook output. Us a URL starting with "http://localhost...".
-
-## (optional) Use composable infrastructure to host app
+## Deployment
 
 Currently, only the Docker container system is documented here. Additional container systems should be added later.
 
