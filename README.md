@@ -1,4 +1,4 @@
-# nbdev_app_template - Notebook-based App Template
+# Scientific Web Application Template - nbdev_app_template
 
 > A Python code example for building web apps without writing HTML, CSS. and JavaScript.
 
@@ -38,37 +38,34 @@ Weighing benefits and drawbacks of the use of notebooks to develop a simple libr
 2. Restart rerun the application notebook
 3. Click through the application to debug and test your changes
 
-This procedure is obviated by the use of nbdev, which allows the developer to develop, interact with, and test a subset of widgets as a single component that can be later integrated into the broader application. 
+This procedure is obviated by the use of nbdev, which allows the developer to develop, interact with, and test a subset of widgets as a single component that can be later integrated into the broader application.
 
 ## Development
 
-### Setup
-1. `conda env create --file environment.yml`
-2. Click the "Use This Template" Button to create a copy of your own.
-3. Update the settings.ini file with all of your information
-4. Run `nbdev_build_lib` from the command line.
+### Getting Started
 
-Add any libraries you need to environment.yml, and update your conda environment with the command `conda env update --name nbtmpl --file environment.yml --prune`
-
-### Deploy Docker Container
-
+1. Click the "Use This Template" Button in GitHub to create a copy of this repo of your own.
 1. Install [Docker](https://docs.docker.com/get-docker/) on your workstation. Note that you may need admin access to run Docker commands.
 1. Start a command line (terminal) session.
 1. Make sure Docker is running by entering: [`docker info`](https://docs.docker.com/config/daemon/).
 1. Run `docker-compose up jupyterlab` to start the JupyterLab server.
+1. Copy the URL starting with "http://localhost..." into your local browser. This URL ends with long token you will need to access the session.
 
-### Install dependecies on your workstation
-Add any dependencies you need by adding them to the environment.yml file in the root directory.
+### Developing on a Remote server
 
-## "Access denied" Error
+If you need to develop your application on a remote server - such as a compute cluster - you will need to use ssh port forwarding in order to access the notebook from the browser on your local machine.
 
-A browser window should appear when you run "jupyter-lab" or "jupyter-notebook". However, if the displayed page indicates access was denied, close the browser window and start another using one of the other URLs listed in the jupyter-lab/notebook output. Us a URL starting with "http://localhost...".
+1. SSH into the remote node using `ssh -L 8888:localhost:8888 <username>@<ip-address>`
+1. Follow the steps in [Getting Started](#getting-started) ***on the remote node*** you just logged into. Docker may already be installed there. You can check for it by running `docker info`.
+
+### Installing dependecies
+Install any dependencies you need by adding them to the environment.yml file in the root directory and rebuilding the docker image.
 
 ### Upload container
 
 To allow others to run your app, it must be hosted on a publicly available Docker hosting system. There are a wide variety of options available including commercial sites like Amazon's AWS. Some institutions maintain their own Docker hosting systems. Depending on the specific reqirements of the hosting system you select, you'll need to provide either:
-- a `Dockerfile` similar to one included in this repo, or
-- a Docker image like the one built above.
+- a `Dockerfile` similar to [Dockerfile-voila](Dockerfile-voila)
+- a Docker image that can [hosted and pulled from Docker Hub](https://docs.docker.com/docker-hub/).
 You might be required to access the host system's Kubernetes management system (e.g. Rancher) to create the container and allocate resources.
 
 ## Attributions
