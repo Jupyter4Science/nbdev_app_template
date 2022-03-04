@@ -21,6 +21,7 @@
 
 Got a Python project or Jupyter notebook? Want to turn it into a web applilcation?
 
+<<<<<<< HEAD
 This repository contains easy-to-modify [Python](https://www.python.org/) code. It demonstrates using [ipywidgets](https://ipywidgets.readthedocs.io/en/stable/) to build an interactive web application. It relies on [Jupyter](https://jupyter.org/) notebook infrasturcture. However, the app looks like a web app, not a notebook. Further, it demonstrates the use of [Docker](https://www.docker.com/) and [Voilà](https://github.com/voila-dashboards/voila) to allow the app to be hosted on composable infrastructure. The example code uses [pandas](https://pandas.pydata.org/) for data access and [Matplotlib](https://matplotlib.org/) to generate plots.
 
 The template was developed so researchers can quickly and easily put their project on the web without getting bogged down in conventional web developement (AJAX, HTML, CSS, JS, etc.). The example notebook uses global temperature data from NASA to show how users can view, search, download, and plot data using an interactive, web enabled tool.
@@ -43,7 +44,6 @@ This procedure is obviated by the use of nbdev, which allows the developer to de
 ## Development
 
 ### Getting Started
-
 1. Click the "Use This Template" Button in GitHub to create a copy of this repo of your own.
 1. Install [Docker](https://docs.docker.com/get-docker/) on your workstation. Note that you may need admin access to run Docker commands.
 1. Start a command line (terminal) session.
@@ -69,5 +69,4 @@ To allow others to run your app, it must be hosted on a publicly available Docke
 You might be required to access the host system's Kubernetes management system (e.g. Rancher) to create the container and allocate resources.
 
 ## Attributions
-
 This template is adapted from [@rcpurdue](https://github.com/rcpurdue)'s Notebook Application Template ([nbtmpl](https://github.com/rcpurdue/nbtmpl)).
