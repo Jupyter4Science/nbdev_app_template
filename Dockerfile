@@ -1,8 +1,12 @@
 FROM jupyter/scipy-notebook
-ARG repourl
-RUN conda install -c conda-forge voila jupyterthemes \
-    && git clone --depth 1 $repourl target
-WORKDIR /home/jovyan/target
-# CMD ["bash"]
-# CMD ["jupyter-notebook","--port=8866"]
-CMD ["voila","notebook.ipynb","--no-browser","--Voila.ip","0.0.0.0"]
+
+# install packages we need for deploying the standalone app with Voila
+RUN mamba install -c conda-forge voila jupyterthemes
+
+# packages we need for interactive literate programming
+RUN mamba install -c fastai nbdev
+
+# install any user packages defined in environment.yml
+WORKDIR "/home/${NB_USER}/work"
+COPY environment.yml .
+RUN mamba env update --file environment.yml

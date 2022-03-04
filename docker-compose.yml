@@ -1,7 +1,7 @@
 version: "3"
 services:
   fastai: &fastai
-    restart: unless-stopped
+    restart: "no"
     working_dir: /data
     image: fastai/codespaces
     logging:
@@ -33,3 +33,22 @@ services:
      && nbdev_build_docs && cd docs
      && bundle i
      && chmod -R u+rwx . && bundle exec jekyll serve --host 0.0.0.0"
+
+  jupyterlab: &jupyterlab
+    build: .
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/home/jovyan/work
+    working_dir: /home/jovyan/work
+
+  voila:
+    <<: *jupyterlab
+    expose:
+      - 8866
+      - 8888
+    ports:
+      - 8866:8866
+      - 8888:8888
+    command:  bash -c "voila /home/jovyan/work/APP.ipynb --no-browser"
+    working_dir: /home/jovyan/voila
