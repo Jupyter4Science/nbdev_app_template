@@ -1,0 +1,10 @@
+{
+  "template_lib": {
+    "Overview": "/",
+    "Getting Started": "getting_started.html",
+    "Welcome to the nbdev_app_template!": "welcome.html",
+    "Title": "data.html",
+    "Data Selection": "selection.html",
+    "Main Application": "main.html"
+  }
+}
