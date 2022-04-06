@@ -76,7 +76,7 @@ class Const:
     PLOT_LABEL = 'Select data field'
 
     # Setting tab
-    PLOT_SETTINGS_SECTION_TITLE = 'Plot Settings'
+    PLOT_SETTINGS_SECTION_TITLE = 'SETTINGS'
     THEME = 'Theme'
     THEMES = ['onedork', 'grade3', 'oceans16', 'chesterish', 'monokai', 'solarizedl', 'solarizedd']
     CONTEXT = 'Context'
